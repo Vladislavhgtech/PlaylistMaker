@@ -1,0 +1,38 @@
+# Исключаем сгенерированные Android файлы
+/.gradle/
+/build/
+/.idea/
+/local.properties
+*.iml
+*.hprof
+
+# Игнорировать настройки и временные файлы IDE
+*.apk
+*.ap_
+*.dex
+*.class
+*.jar
+*.war
+*.ear
+*.keystore
+.gradle/
+
+# Кэш Android Studio
+*.log
+*.caches
+*.gradle/
+
+# Игнорировать файлы, связанные с пользователем
+.DS_Store
+Thumbs.db
+
+# Логи и временные файлы
+*.tmp
+
+# Файлы, генерируемые системой Linux
+*~
+.idea/
+.vscode/
+
+# Локальные настройки Android Studio
+.local/
