@@ -13,16 +13,11 @@ class SettingsActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 
-        // Устанавливаем MaterialToolbar как ActionBar
+
         val toolbar: Toolbar = findViewById(R.id.settings_toolbar)
-        setSupportActionBar(toolbar)
 
-        // Настроить кнопку "Назад" в Toolbar
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // Обработчик нажатия на иконку "Назад"
         toolbar.setNavigationOnClickListener {
-            // Возвращаемся на главную страницу
             finish() // Закрывает текущую активность и возвращает пользователя на предыдущую
         }
 
