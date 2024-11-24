@@ -44,6 +44,14 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                systemBars.left + resources.getDimensionPixelSize(R.dimen.padding_16dp),
+                systemBars.top ,
+                systemBars.right + resources.getDimensionPixelSize(R.dimen.padding_16dp),
+                systemBars.bottom + resources.getDimensionPixelSize(R.dimen.padding_28dp)
+            )
+
+
             insets
         }
     }
