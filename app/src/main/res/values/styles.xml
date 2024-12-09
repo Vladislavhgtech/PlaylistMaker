@@ -35,6 +35,22 @@
         <item name="elevation">0dp</item>
     </style>
 
+    <style name="MainScreenButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item> <!-- Делим высоту на 3 -->
+        <item name="android:layout_marginTop">@dimen/margin_14dp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">22sp</item> <!-- Размер текста 22 -->
+        <item name="android:textColor">@color/buttonTextColor</item>
+        <item name="android:textAllCaps">false</item> <!-- Только первая буква заглавная -->
+        <item name="android:paddingVertical">16dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:backgroundTint">@color/buttonColor</item>
+        <item name="elevation">0dp</item>
+        <item name="cornerRadius">16dp</item>
+    </style>
+
 
 
 

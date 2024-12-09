@@ -10,5 +10,6 @@
         <color name="settings_icon_color">#AEAFB4</color>
         <color name="settings_switch">#AEAFB4</color>
         <color name="search_form_text_hint_color">#AEAFB4</color>
+        <color name="search_form_text_color">#AEAFB4</color>
 
 </resources>
