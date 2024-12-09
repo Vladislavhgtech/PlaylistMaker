@@ -23,31 +23,28 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/searchButton"
-        style="@style/BaseMaterialButtonStyle"
+        style="@style/MainScreenButtonStyle"
         android:text="@string/button_search"
         app:icon="@drawable/search"
         app:iconSize="@dimen/icon_size_32dp"
-        app:cornerRadius="@dimen/padding_16dp"
         app:iconGravity="textStart"
         app:iconTint="@color/buttonTextColor" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/mediaButton"
-        style="@style/BaseMaterialButtonStyle"
+        style="@style/MainScreenButtonStyle"
         android:text="@string/button_library"
         app:icon="@drawable/media_library"
         app:iconSize="@dimen/icon_size_32dp"
-        app:cornerRadius="@dimen/padding_16dp"
         app:iconGravity="textStart"
         app:iconTint="@color/buttonTextColor" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/settingsButton"
-        style="@style/BaseMaterialButtonStyle"
+        style="@style/MainScreenButtonStyle"
         android:text="@string/settings"
         app:icon="@drawable/settings"
         app:iconSize="@dimen/icon_size_32dp"
-        app:cornerRadius="@dimen/padding_16dp"
         app:iconGravity="textStart"
         app:iconTint="@color/buttonTextColor" />
 </LinearLayout>

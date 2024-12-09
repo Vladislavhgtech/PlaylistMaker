@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.appcompat.widget.Toolbar
 
 class SearchActivity : AppCompatActivity() {
 
@@ -24,6 +25,13 @@ class SearchActivity : AppCompatActivity() {
 
         val searchEditText = findViewById<EditText>(R.id.input_search_form)
         val clearButton = findViewById<ImageView>(R.id.button_clear_search_form)
+        val toolbar: Toolbar = findViewById(R.id.search_toolbar)
+
+        // Настроим кнопку "Назад" на Toolbar
+        toolbar.setNavigationOnClickListener {
+            // Используем новый метод для обработки "Назад"
+            onBackPressedDispatcher.onBackPressed() // вызываем новый метод для выхода
+        }
 
         // Устанавливаем обработчик для отображения системных отступов
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->

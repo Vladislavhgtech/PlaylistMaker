@@ -12,7 +12,7 @@
     android:paddingBottom="@dimen/padding_28dp">
 
   <com.google.android.material.appbar.MaterialToolbar
-      android:id="@+id/settings_toolbar"
+      android:id="@+id/search_toolbar"
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:layout_marginBottom="24dp"
@@ -33,20 +33,21 @@
   <FrameLayout
       android:id="@+id/container"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingHorizontal="@dimen/padding_16dp">
+      android:layout_height="72dp"
+      android:paddingHorizontal="@dimen/padding_16dp"
+      android:importantForAccessibility="yes">
 
     <EditText
         android:id="@+id/input_search_form"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="36dp"
         android:layout_gravity="center"
         android:background="@drawable/rounded_edit_text"
         android:drawableStart="@drawable/search"
         android:drawablePadding="@dimen/padding_8dp"
         android:drawableTint="@color/search_form_text_hint_color"
         android:textCursorDrawable="@drawable/cursor_color"
-        android:cursorVisible="false"
+        android:cursorVisible="true"
         android:hint="@string/search"
         android:imeOptions="actionDone"
         android:inputType="text|textCapSentences|textAutoCorrect"
@@ -55,7 +56,7 @@
         android:paddingStart="@dimen/padding_12dp"
         android:paddingEnd="32dp"
         android:singleLine="true"
-        android:textColor="#AEAFB4"
+        android:textColor="@color/search_form_text_hint_color"
         android:textColorHint="@color/search_form_text_hint_color"
         android:autofillHints="search" />
 
@@ -63,13 +64,13 @@
         android:id="@+id/button_clear_search_form"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:layout_gravity="end|center_vertical"
         android:layout_marginStart="@dimen/margin_16dp"
         android:padding="@dimen/padding_18dp"
         android:visibility="gone"
         android:contentDescription="@string/clear_search_description"
         app:tint="@color/search_form_text_hint_color"
-        android:src="@drawable/ic_clear"/>
+        android:src="@drawable/cross"/>
 
   </FrameLayout>
 
