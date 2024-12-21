@@ -8,7 +8,7 @@
     <color name="toolbar_color">#ffffff</color> <!-- Белый цвет тулбара -->
     <color name="settings_icon_color">#ffffff</color> <!-- Белые иконки -->
     <color name="settings_switch">#3772E7</color> <!-- Цвет переключателя настроек -->
-    <color name="search_form_text_hint_color">#B0B0B0</color> <!-- Светло-серый цвет подсказок для поиска -->
+    <color name="search_form_text_hint_color">#000000</color> <!-- Светло-серый цвет подсказок для поиска -->
     <color name="search_form_text_color">#B0B0B0</color> <!-- Светло-серый цвет текста в поиске -->
 
     <color name="recyclerView_track_name">#ffffff</color>
@@ -16,4 +16,5 @@
     <color name="recyclerView_track_time">#ffffff</color>
 
     <color name="arrow_color">#FFFFFF</color>
+
 </resources>

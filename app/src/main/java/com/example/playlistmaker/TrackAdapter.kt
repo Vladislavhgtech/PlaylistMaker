@@ -38,7 +38,7 @@ class TrackAdapter(
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.placeholder)
-                .transform(RoundedCorners(itemView.context.resources.getDimensionPixelSize(R.dimen.button_corner_radius)))
+                .transform(RoundedCorners(itemView.context.resources.getDimensionPixelSize(R.dimen.cover_radius)))
                 .into(trackImage)
 
         }
