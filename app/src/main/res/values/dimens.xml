@@ -2,6 +2,9 @@
 <resources>
     <!-- Отступы -->
     <dimen name="padding_16dp">16dp</dimen>
+
+    <dimen name="padding_5dp">16dp</dimen>
+
     <dimen name="padding_18dp">18dp</dimen>
     <dimen name="padding_0dp">0dp</dimen>
     <dimen name="padding_28dp">28dp</dimen>
@@ -9,7 +12,10 @@
     <dimen name="header_margin">4dp</dimen>
     <dimen name="padding_20dp">20dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
+
+    <dimen name="padding_3dp">3dp</dimen>
     <dimen name="padding_12dp">12dp</dimen>
+
 
     <dimen name="margin_16dp">16dp</dimen>
 
@@ -17,13 +23,21 @@
     <dimen name="text_size_title">22sp</dimen>
     <dimen name="text_size_26sp">26sp</dimen>
     <dimen name="text_size_18sp">18sp</dimen>
-    <dimen name="text_size_22sp">22sp</dimen>
-    <dimen name="text_size_16sp">18sp</dimen>
 
+    <dimen name="text_size_11sp">11sp</dimen>
+    <dimen name="text_size_12sp">12sp</dimen>
+    <dimen name="text_size_22sp">22sp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
 
     <!-- Размеры кнопок -->
     <dimen name="button_corner_radius">16dp</dimen>
+    <dimen name="cover_radius">2dp</dimen>
 
     <!-- Размеры иконок -->
     <dimen name="icon_size_32dp">32dp</dimen>
 </resources>
+
+   
+
+</resources>
+
