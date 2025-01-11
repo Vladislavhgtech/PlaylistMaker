@@ -56,9 +56,8 @@
         android:paddingStart="@dimen/padding_12dp"
         android:paddingEnd="32dp"
         android:singleLine="true"
-        android:textColor="@color/search_form_text_hint_color"
-        android:textColorHint="@color/search_form_text_hint_color"
         android:autofillHints="search" />
+
 
     <ImageView
         android:id="@+id/button_clear_search_form"
@@ -74,15 +73,63 @@
 
   </FrameLayout>
 
-  <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/track_recycler_view"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"
-      android:clipToPadding="false"
-      android:paddingTop="16dp"
-      android:paddingBottom="16dp"
-      tools:listitem="@layout/item_track" />
 
+
+    <!-- Плейсхолдер "Нет результатов" -->
+    <TextView
+        android:id="@+id/placeholderNothingWasFound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:drawablePadding="20dp"
+        android:text="Ничего не нашлось"
+        android:textAlignment="center"
+        android:textColor="#1A1B22"
+        android:textSize="19sp"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/empty_result_image" />
+
+    <LinearLayout
+        android:id="@+id/placeholderCommunicationsProblem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:layout_marginHorizontal="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/connection_problem"
+            android:src="@drawable/errors_icon" />
+
+        <TextView
+            style="@style/ErrorTextPlaceholder"
+            android:text="@string/connection_problem" />
+
+        <TextView
+            android:id="@+id/errorText"
+            style="@style/ErrorTextPlaceholder"
+            android:text="@string/check_internet_connection" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_retry"
+            style="@style/ErrorButtonPlaceholder"
+            android:text="@string/retry_button" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        tools:listitem="@layout/item_track" />
 
 </LinearLayout>

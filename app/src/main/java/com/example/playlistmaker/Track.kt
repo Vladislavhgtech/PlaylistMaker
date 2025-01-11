@@ -6,3 +6,8 @@ data class Track(
     val trackTime: String,
     val artworkUrl100: String
 )
+
+data class TrackResponse(
+    val resultCount: Int,        // Количество найденных результатов
+    val results: List<Track>     // Список треков, полученных из ответа
+)
