@@ -13,16 +13,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.appcompat.widget.Toolbar
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
 
 
 class SearchActivity : AppCompatActivity() {
 
     private var searchQuery: String = "" // Переменная для сохранения текста
+
     private lateinit var trackList: ArrayList<Track>
     private lateinit var trackRecyclerView: RecyclerView
     private lateinit var trackAdapter: TrackAdapter
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +37,7 @@ class SearchActivity : AppCompatActivity() {
         val searchEditText = findViewById<EditText>(R.id.input_search_form)
         val clearButton = findViewById<ImageView>(R.id.button_clear_search_form)
         val toolbar: Toolbar = findViewById(R.id.search_toolbar)
+
 
 
         // Инициализируем список треков
