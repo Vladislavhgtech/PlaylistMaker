@@ -9,7 +9,7 @@
     <color name="toolbar_color">#ffffff</color> 
     <color name="settings_icon_color">#ffffff</color>
     <color name="settings_switch">#3772E7</color>
-    <color name="search_form_text_hint_color">#000000</color>
+
     <color name="search_form_text_color">#B0B0B0</color> 
 
     <color name="recyclerView_track_name">#ffffff</color>
