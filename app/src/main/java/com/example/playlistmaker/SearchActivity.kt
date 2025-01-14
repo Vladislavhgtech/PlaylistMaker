@@ -42,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())  // Используем конвертер Gson для преобразования данных
         .build()
 
-    private val iTunesApi = retrofit.create(ITunesApi::class.java)
+    private val iTunesApi: ITunesApi by lazy { RetrofitClient.createApi() }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,9 +88,12 @@ class SearchActivity : AppCompatActivity() {
         })
 
         clearButton.setOnClickListener {
-            searchEditText.text.clear()
-            searchEditText.clearFocus()
-            hideKeyboard(searchEditText)
+            searchEditText.text.clear()  // Очищаем текст в поле
+            searchEditText.clearFocus()  // Снимаем фокус с поля ввода
+            hideKeyboard(searchEditText) // Скрываем клавиатуру
+
+            // Сбрасываем результаты поиска и обновляем видимость
+            resetSearchResults()
         }
 
         // Обработка нажатия на кнопку "Done"
@@ -105,9 +108,12 @@ class SearchActivity : AppCompatActivity() {
 
         // Обрабатываем нажатие на кнопку очистки
         clearButton.setOnClickListener {
-            searchEditText.text.clear() // Очищаем текст
-            searchEditText.clearFocus() // Снимаем фокус с поля
-            hideKeyboard(searchEditText) // Скрываем клавиатуру
+            searchEditText.text.clear()
+            searchEditText.clearFocus()
+            hideKeyboard(searchEditText)
+
+
+            clearSearchResults()
         }
 
         // Устанавливаем фокус на поле при его нажатии и показываем клавиатуру
@@ -127,6 +133,27 @@ class SearchActivity : AppCompatActivity() {
             searchQuery = it
             searchEditText.setText(it)
         }
+    }
+
+    private fun clearSearchResults() {
+        // Очистить список треков
+        trackList.clear()
+        trackAdapter.notifyDataSetChanged() // Обновить адаптер
+
+        // Скрыть RecyclerView и плейсхолдеры
+        trackRecyclerView.visibility = View.GONE
+        placeholderNothingWasFound.visibility = View.GONE
+        placeholderCommunicationsProblem.visibility = View.GONE
+    }
+
+
+    private fun resetSearchResults() {
+        trackList.clear() // Очистить список треков
+        trackAdapter.notifyDataSetChanged() // Уведомить адаптер о том, что данные изменились
+
+        trackRecyclerView.visibility = View.GONE // Скрыть RecyclerView
+        placeholderNothingWasFound.visibility = View.GONE // Скрыть плейсхолдер "Нет результатов"
+        placeholderCommunicationsProblem.visibility = View.GONE // Скрыть плейсхолдер ошибки
     }
 
     private fun performSearch(query: String) {

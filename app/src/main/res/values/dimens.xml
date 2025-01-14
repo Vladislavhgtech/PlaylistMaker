@@ -3,7 +3,7 @@
     <!-- Отступы -->
     <dimen name="padding_16dp">16dp</dimen>
 
-    <dimen name="padding_5dp">16dp</dimen>
+    <dimen name="padding_5dp">5dp</dimen>
 
     <dimen name="padding_18dp">18dp</dimen>
     <dimen name="padding_0dp">0dp</dimen>
@@ -12,6 +12,7 @@
     <dimen name="header_margin">4dp</dimen>
     <dimen name="padding_20dp">20dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
+
 
     <dimen name="padding_3dp">3dp</dimen>
     <dimen name="padding_12dp">12dp</dimen>
@@ -34,7 +35,9 @@
     <dimen name="cover_radius">2dp</dimen>
 
     <!-- Размеры иконок -->
+    <dimen name="icon_size_45dp">45dp</dimen>
     <dimen name="icon_size_32dp">32dp</dimen>
+
 </resources>
 
    

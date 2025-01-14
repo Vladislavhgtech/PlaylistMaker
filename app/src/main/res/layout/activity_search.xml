@@ -15,7 +15,7 @@
       android:id="@+id/search_toolbar"
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
-      android:layout_marginBottom="24dp"
+      android:layout_marginBottom="0dp"
       app:navigationIconTint="@color/toolbar_color"
       app:navigationIcon="@drawable/back_arrow">
 
@@ -35,6 +35,7 @@
       android:layout_width="match_parent"
       android:layout_height="72dp"
       android:paddingHorizontal="@dimen/padding_16dp"
+      android:layout_marginTop="0dp"
       android:importantForAccessibility="yes">
 
     <EditText
