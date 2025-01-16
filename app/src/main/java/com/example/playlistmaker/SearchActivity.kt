@@ -157,6 +157,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun performSearch(query: String) {
+
+        resetSearchResults()
+
         if (query.isNotEmpty()) {
             iTunesApi.searchTracks(query).enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {

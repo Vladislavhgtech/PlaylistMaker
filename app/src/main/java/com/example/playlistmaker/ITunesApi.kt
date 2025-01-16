@@ -7,7 +7,7 @@ import retrofit2.http.Query
 interface ITunesApi {
     @GET("/search")
     fun searchTracks(
-        @Query("term") query: String, // Параметр запроса
-        @Query("media") media: String = "music", // Тип медиа
-    ): Call<TrackResponse> // Возвращаем объект, который будет содержать ответ от API
+        @Query("term") query: String,
+        @Query("media") media: String = "music",
+    ): Call<TrackResponse>
 }

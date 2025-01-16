@@ -34,7 +34,7 @@ class TrackAdapter(
         fun bind(track: Track) {
             trackName.text = track.trackName
             trackArtist.text = track.artistName
-            trackTime.text = track.trackTime
+            trackTime.text = track.getFormattedTrackTime()
 
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
