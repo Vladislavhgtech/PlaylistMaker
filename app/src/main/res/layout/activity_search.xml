@@ -82,7 +82,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="100dp"
         android:drawablePadding="20dp"
-        android:text="Ничего не нашлось"
+        android:text="@string/nothingWasFound"
         android:textAlignment="center"
         android:textColor="#1A1B22"
         android:textSize="19sp"
