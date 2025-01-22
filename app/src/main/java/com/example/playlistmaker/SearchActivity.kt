@@ -13,20 +13,36 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.appcompat.widget.Toolbar
-
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import android.widget.LinearLayout
+import com.google.android.material.button.MaterialButton
 
-
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
     private var searchQuery: String = "" // Переменная для сохранения текста
-
     private lateinit var trackList: ArrayList<Track>
     private lateinit var trackRecyclerView: RecyclerView
     private lateinit var trackAdapter: TrackAdapter
 
+    private lateinit var placeholderNothingWasFound: TextView
+    private lateinit var placeholderCommunicationsProblem: LinearLayout
+    private lateinit var buttonRetry: MaterialButton
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("https://itunes.apple.com")  // Базовый URL для API iTunes
+        .addConverterFactory(GsonConverterFactory.create())  // Используем конвертер Gson для преобразования данных
+        .build()
+
+    private val iTunesApi: ITunesApi by lazy { RetrofitClient.createApi() }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,54 +54,21 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.button_clear_search_form)
         val toolbar: Toolbar = findViewById(R.id.search_toolbar)
 
+        trackList = arrayListOf()
+
+        // Инициализация плейсхолдеров
+        placeholderNothingWasFound = findViewById(R.id.placeholderNothingWasFound)
+        placeholderCommunicationsProblem = findViewById(R.id.placeholderCommunicationsProblem)
+        buttonRetry = findViewById(R.id.button_retry)
 
 
-        // Инициализируем список треков
-
-        trackList = arrayListOf(
-            Track(
-                trackName = "Smells Like Teen Spirit",
-                artistName = "Nirvana",
-                trackTime = "5:01",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-            ),
-            Track(
-                trackName = "Billie Jean",
-                artistName = "Michael Jackson",
-                trackTime = "4:35",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-            ),
-            Track(
-                trackName = "Stayin' Alive",
-                artistName = "Bee Gees",
-                trackTime = "4:10",
-                artworkUrl100 = "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-            ),
-            Track(
-                trackName = "Whole Lotta Love",
-                artistName = "Led Zeppelin",
-                trackTime = "5:33",
-                artworkUrl100 = "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-            ),
-            Track(
-                trackName = "Sweet Child O'Mine",
-                artistName = "Guns N' Roses",
-                trackTime = "5:03",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-            )
-        )
-
-        // Инициализация RecyclerView
         trackRecyclerView = findViewById(R.id.track_recycler_view)
-        trackAdapter = TrackAdapter(trackList) // Передаём список треков в адаптер
+        trackAdapter = TrackAdapter(trackList)
         trackRecyclerView.layoutManager = LinearLayoutManager(this)
         trackRecyclerView.adapter = trackAdapter
 
-
-        // Настроим кнопку "Назад" на Toolbar
         toolbar.setNavigationOnClickListener {
-            // Используем новый метод для обработки "Назад"
-            onBackPressedDispatcher.onBackPressed() // вызываем новый метод для выхода
+            onBackPressedDispatcher.onBackPressed()
         }
 
         // Устанавливаем обработчик для отображения системных отступов
@@ -95,23 +78,42 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        // Добавляем TextWatcher для управления видимостью кнопки очистки
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
-                searchQuery = s.toString() // Сохраняем текст в переменную
+                searchQuery = s.toString()
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        clearButton.setOnClickListener {
+            searchEditText.text.clear()  // Очищаем текст в поле
+            searchEditText.clearFocus()  // Снимаем фокус с поля ввода
+            hideKeyboard(searchEditText) // Скрываем клавиатуру
+
+            // Сбрасываем результаты поиска и обновляем видимость
+            resetSearchResults()
+        }
+
+        // Обработка нажатия на кнопку "Done"
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                performSearch(searchQuery)
+            }
+            false
+        }
+
+
+
         // Обрабатываем нажатие на кнопку очистки
         clearButton.setOnClickListener {
-            searchEditText.text.clear() // Очищаем текст
-            searchEditText.clearFocus() // Снимаем фокус с поля
-            hideKeyboard(searchEditText) // Скрываем клавиатуру
+            searchEditText.text.clear()
+            searchEditText.clearFocus()
+            hideKeyboard(searchEditText)
+
+
+            clearSearchResults()
         }
 
         // Устанавливаем фокус на поле при его нажатии и показываем клавиатуру
@@ -121,12 +123,77 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+        // Обработчик клика на кнопку "Обновить"
+        buttonRetry.setOnClickListener {
+            performSearch(searchQuery)  // Повторный запрос
+        }
+
         // Восстанавливаем текст из сохранённого состояния, если есть
         savedInstanceState?.getString(KEY_SEARCH_QUERY)?.let {
             searchQuery = it
             searchEditText.setText(it)
         }
     }
+
+    private fun clearSearchResults() {
+        // Очистить список треков
+        trackList.clear()
+        trackAdapter.notifyDataSetChanged() // Обновить адаптер
+
+        // Скрыть RecyclerView и плейсхолдеры
+        trackRecyclerView.visibility = View.GONE
+        placeholderNothingWasFound.visibility = View.GONE
+        placeholderCommunicationsProblem.visibility = View.GONE
+    }
+
+
+    private fun resetSearchResults() {
+        trackList.clear() // Очистить список треков
+        trackAdapter.notifyDataSetChanged() // Уведомить адаптер о том, что данные изменились
+
+        trackRecyclerView.visibility = View.GONE // Скрыть RecyclerView
+        placeholderNothingWasFound.visibility = View.GONE // Скрыть плейсхолдер "Нет результатов"
+        placeholderCommunicationsProblem.visibility = View.GONE // Скрыть плейсхолдер ошибки
+    }
+
+    private fun performSearch(query: String) {
+
+        resetSearchResults()
+
+        if (query.isNotEmpty()) {
+            iTunesApi.searchTracks(query).enqueue(object : Callback<TrackResponse> {
+                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+                    // Скрываем плейсхолдеры
+                    placeholderNothingWasFound.visibility = View.GONE
+                    placeholderCommunicationsProblem.visibility = View.GONE
+                    trackRecyclerView.visibility = View.VISIBLE
+
+                    if (response.isSuccessful && response.body() != null) {
+                        val tracks = response.body()?.results ?: emptyList()
+
+                        if (tracks.isEmpty()) {
+                            // Плейсхолдер "Нет результатов"
+                            placeholderNothingWasFound.visibility = View.VISIBLE
+                        } else {
+                            // Отображаем список результатов
+                            trackList.clear()
+                            trackList.addAll(tracks)
+                            trackAdapter.notifyDataSetChanged()
+                        }
+                    } else {
+                        placeholderCommunicationsProblem.visibility = View.VISIBLE
+                    }
+                }
+
+                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    // Плейсхолдер "Ошибка сервера"
+                    placeholderCommunicationsProblem.visibility = View.VISIBLE
+                }
+            })
+        }
+    }
+
+
 
     // Сохраняем текст при изменении конфигурации
     override fun onSaveInstanceState(outState: Bundle) {
@@ -149,4 +216,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val KEY_SEARCH_QUERY = "SEARCH_QUERY"
     }
+
+
 }
