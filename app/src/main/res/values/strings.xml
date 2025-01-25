@@ -22,4 +22,8 @@
     <string name="check_internet_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="retry_button">Обновить</string>
     <string name="nothingWasFound">Ничего не нашлось</string>
+    <string name="update">Обновить</string>
+
+    <string name="history_title">Вы искали</string>
+    <string name="history_clear_btn">Очистить историю</string>
 </resources>

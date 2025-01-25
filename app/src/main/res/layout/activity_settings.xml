@@ -25,17 +25,19 @@
             android:gravity="center_vertical"
             android:text="@string/settings"
             android:fontFamily="@font/ys_display_regular"
-            android:textColor="@color/toolbar_color"
             android:textFontWeight="500"
             android:textSize="@dimen/text_size_22sp" />
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/themeSwitcher"
         style="@style/SettingsBtn"
         tools:ignore="UseSwitchCompatOrMaterialXml"
+        android:layout_gravity="start"
         android:thumbTint="@color/settings_switch"
         android:trackTint="@color/settings_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/dark_theme" />
 
     <Button
