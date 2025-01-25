@@ -29,7 +29,7 @@ import android.widget.Button
 
 class SearchActivity : AppCompatActivity() {
 
-    private var searchQuery: String = "" // Переменная для сохранения текста
+    private var searchQuery: String = ""
     private lateinit var trackList: MutableList<Track>
     private lateinit var trackRecyclerView: RecyclerView
     private lateinit var trackAdapter: TrackAdapter
@@ -49,8 +49,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryButton: Button
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com")  // Базовый URL для API iTunes
-        .addConverterFactory(GsonConverterFactory.create())  // Используем конвертер Gson для преобразования данных
+        .baseUrl("https://itunes.apple.com")
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     private val iTunesApi: ITunesApi by lazy { RetrofitClient.createApi() }
@@ -74,6 +74,7 @@ class SearchActivity : AppCompatActivity() {
         wgHistory = findViewById(R.id.wg_history_search)
         historyRecyclerView = findViewById(R.id.rw_history_list_search)
         clearHistoryButton = findViewById(R.id.btn_clear_history_search)
+        
 
 
         trackRecyclerView = findViewById(R.id.track_recycler_view)
@@ -90,7 +91,7 @@ class SearchActivity : AppCompatActivity() {
             onTrackClicked(track)  // Сохранить трек в историю и обновить UI
         }
 
-        // Обработчик клика по кнопке очистки истории
+
         findViewById<Button>(R.id.btn_clear_history_search).setOnClickListener {
             searchHistory.clearSearchHistory()
             historyAdapter.updateTrackList(searchHistory.getSearchHistoryTracks().toMutableList())
@@ -99,6 +100,8 @@ class SearchActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+
+        toggleHistoryVisibility()
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->
@@ -120,18 +123,26 @@ class SearchActivity : AppCompatActivity() {
         })
 
         clearButton.setOnClickListener {
-            searchEditText.text.clear()  // Очищаем текст в поле
-            searchEditText.clearFocus()  // Снимаем фокус с поля ввода
-            hideKeyboard(searchEditText) // Скрываем клавиатуру
+            searchEditText.text.clear()
+            searchEditText.clearFocus()
+            hideKeyboard(searchEditText)
+
 
             wgHistory.visibility = View.VISIBLE
             resetSearchResults()
         }
 
         clearHistoryButton.setOnClickListener {
+
             searchHistory.clearSearchHistory()
+
             historyAdapter.updateTrackList(searchHistory.getSearchHistoryTracks().toMutableList())
+
+
+            toggleHistoryVisibility()
         }
+
+
 
 
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
@@ -142,36 +153,24 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-
-
-        clearButton.setOnClickListener {
-            searchEditText.text.clear()
-            searchEditText.clearFocus()
-            hideKeyboard(searchEditText)
-
-
-            clearSearchResults()
-        }
-
-        // Устанавливаем фокус на поле при его нажатии и показываем клавиатуру
         searchEditText.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 showKeyboard(v)
             }
         }
 
-        // Обработчик клика на кнопку "Обновить"
+
         buttonRetry.setOnClickListener {
-            performSearch(searchQuery)  // Повторный запрос
+            performSearch(searchQuery)
         }
 
-        // Восстанавливаем текст из сохранённого состояния, если есть
+
         savedInstanceState?.getString(KEY_SEARCH_QUERY)?.let {
             searchQuery = it
             searchEditText.setText(it)
         }
 
-        // Показываем историю поиска, если поле пустое
+
         if (searchQuery.isEmpty()) {
             wgHistory.visibility = View.VISIBLE
         } else {
@@ -179,43 +178,47 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun toggleHistoryVisibility() {
+        val historyTracks = searchHistory.getSearchHistoryTracks()
 
-
-    private fun clearSearchResults() {
-        // Очистить список треков
-        trackList.clear()
-        trackAdapter.notifyDataSetChanged() // Обновить адаптер
-
-        // Скрыть RecyclerView и плейсхолдеры
-        trackRecyclerView.visibility = View.GONE
-        placeholderNothingWasFound.visibility = View.GONE
-        placeholderCommunicationsProblem.visibility = View.GONE
+        // Если история поиска не пуста
+        if (historyTracks.isNotEmpty()) {
+            wgHistory.visibility = View.VISIBLE
+            clearHistoryButton.visibility = View.VISIBLE
+            placeholderNothingWasFound.visibility = View.GONE
+            findViewById<TextView>(R.id.history_text).visibility = View.VISIBLE
+        } else {
+            // Если история пуста
+            wgHistory.visibility = View.GONE
+            clearHistoryButton.visibility = View.GONE
+            placeholderNothingWasFound.visibility = View.GONE
+            findViewById<TextView>(R.id.history_text).visibility = View.GONE
+        }
     }
 
+
     private fun onTrackClicked(track: Track) {
-        saveTrack(track)  // Сохраняем трек в истории
-        // Тут можно перейти к экрану с деталями трека, если нужно
+        saveTrack(track)
     }
 
     private fun saveTrack(track: Track) {
         searchHistory.saveTrack(track)
         historyAdapter.updateTrackList(searchHistory.getSearchHistoryTracks().toMutableList()) // Обновляем UI
-        historyAdapter.notifyDataSetChanged() // Уведомляем адаптер об изменении
-        wgHistory.visibility = View.GONE  // Скрываем историю поиска
+        historyAdapter.notifyDataSetChanged()
+        wgHistory.visibility = View.GONE
     }
 
 
     private fun resetSearchResults() {
-        trackList.clear() // Очистить список треков
-        trackAdapter.notifyDataSetChanged() // Уведомить адаптер о том, что данные изменились
+        trackList.clear()
+        trackAdapter.notifyDataSetChanged()
 
-        trackRecyclerView.visibility = View.GONE // Скрыть RecyclerView
-        placeholderNothingWasFound.visibility = View.GONE // Скрыть плейсхолдер "Нет результатов"
-        placeholderCommunicationsProblem.visibility = View.GONE // Скрыть плейсхолдер ошибки
+        trackRecyclerView.visibility = View.GONE
+        placeholderNothingWasFound.visibility = View.GONE
+        placeholderCommunicationsProblem.visibility = View.GONE
     }
 
     private fun performSearch(query: String) {
-
         resetSearchResults()
 
         if (query.isNotEmpty()) {
@@ -230,7 +233,6 @@ class SearchActivity : AppCompatActivity() {
                         val tracks = response.body()?.results ?: emptyList()
 
                         if (tracks.isEmpty()) {
-                            // Плейсхолдер "Нет результатов"
                             placeholderNothingWasFound.visibility = View.VISIBLE
                         } else {
                             // Отображаем список результатов
@@ -244,12 +246,12 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    // Плейсхолдер "Ошибка сервера"
                     placeholderCommunicationsProblem.visibility = View.VISIBLE
                 }
             })
         }
     }
+
 
 
 
