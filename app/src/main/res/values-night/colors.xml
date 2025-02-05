@@ -9,15 +9,20 @@
     <color name="toolbar_color">#ffffff</color> 
     <color name="settings_icon_color">#ffffff</color>
     <color name="settings_switch">#3772E7</color>
+    <color name="setButtonColor">#1A1B22</color>
 
-
-    <color name="search_form_text_color">#B0B0B0</color> 
+    <color name="search_form_text_color">#1A1B22</color>
+    <color name="search_form_text_hint_color">#1A1B22</color>
 
     <color name="recyclerView_track_name">#ffffff</color>
     <color name="recyclerView_artist_name">#ffffff</color>
     <color name="recyclerView_track_time">#ffffff</color>
 
     <color name="arrow_color">#FFFFFF</color>
-    <color name="search_form_text_hint_color">#1A1B22</color>
+
+    <color name="text_color_title">#FFFFFF</color>
+    <color name="button_background_color">#FFFFFF</color>
+    <color name="button_text_color">#1A1B22</color>
+
 
 </resources>

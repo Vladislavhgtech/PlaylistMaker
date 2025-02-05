@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import android.widget.Button
 import android.content.Intent
 import android.net.Uri
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +27,17 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+
+        val app = applicationContext as App
+        themeSwitcher.isChecked = app.darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            // Переключаем тему через метод switchTheme
+            (applicationContext as App).switchTheme(checked)
+        }
+
 
         val shareButton: Button = findViewById(R.id.button_sharing)
         shareButton.setOnClickListener {
@@ -64,6 +76,8 @@ class SettingsActivity : AppCompatActivity() {
 
         startActivity(Intent.createChooser(emailIntent, getString(R.string.choose_email_client)))
     }
+
+
 
     private fun openUserAgreement() {
         val url = getString(R.string.user_agreement_url)
