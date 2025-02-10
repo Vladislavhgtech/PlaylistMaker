@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.LinearLayout
 import com.google.android.material.button.MaterialButton
+import android.content.Intent
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -88,7 +89,8 @@ class SearchActivity : AppCompatActivity() {
         historyRecyclerView.adapter = historyAdapter
 
         trackAdapter.setOnItemClickListener { track ->
-            onTrackClicked(track)  // Сохранить трек в историю и обновить UI
+            val intent = Intent(this, AudioPlayerActivity::class.java)
+            startActivity(intent) // Просто открываем активити с версткой
         }
 
 

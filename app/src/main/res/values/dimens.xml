@@ -29,6 +29,7 @@
     <dimen name="text_size_12sp">12sp</dimen>
     <dimen name="text_size_22sp">22sp</dimen>
     <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="text_size_13sp">13sp</dimen>
 
     <!-- Размеры кнопок -->
     <dimen name="button_corner_radius">16dp</dimen>
@@ -39,12 +40,16 @@
     <dimen name="icon_size_32dp">32dp</dimen>
 
     <dimen name="corner_radius_54">54dp</dimen>
+    <dimen name="corner_radius_8">8dp</dimen>
     <dimen name="text_size_14">14sp</dimen>
     <dimen name="margin_top_24">24dp</dimen>
 
     <dimen name="margin_horizontal_16">16dp</dimen>
     <dimen name="margin_top_42">42dp</dimen>
     <dimen name="margin_bottom_20">20dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="margin_54">54dp</dimen>
+    <dimen name="size_button">52dp</dimen>
     <dimen name="letter_spacing">0</dimen>
     <dimen name="margin_bottom_16">16dp</dimen>
 
@@ -62,6 +67,12 @@
     <dimen name="line_height_22_27">22.27sp</dimen>
     <dimen name="margin_top_132">132dp</dimen>
     <dimen name="margin_start_16">16dp</dimen>
+
+    <dimen name="margin_24">24dp</dimen>
+    <dimen name="margin_4">4dp</dimen>
+    <dimen name="margin_8">8dp</dimen>
+    <dimen name="margin_28">28dp</dimen>
+    <dimen name="constraintGuide_16">16dp</dimen>
 
 
 
