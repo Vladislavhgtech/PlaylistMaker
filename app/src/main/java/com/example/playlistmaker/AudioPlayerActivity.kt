@@ -44,15 +44,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackNameV: TextView = findViewById(R.id.trackName)
         val trackArtistV: TextView = findViewById(R.id.artistName)
         val trackDurationV: TextView = findViewById(R.id.duration)
-        val trackAlbumV: TextView = findViewById(R.id.album_name)
         val trackReleaseDataV: TextView = findViewById(R.id.release_date_data)
         val trackGenreV: TextView = findViewById(R.id.primary_genre_name)
         val trackCountryV: TextView = findViewById(R.id.country_data)
         val trackCurrentTimeV: TextView = findViewById(R.id.trackTime)
 
-        val btnPlay: ImageButton = findViewById(R.id.play_track)
-        val btnAddToPlaylist: ImageButton = findViewById(R.id.button_add_to_playlist)
-        val btnLike: ImageButton = findViewById(R.id.button_add_to_favorites)
 
         track?.let {
             val cornerRadiusDp = (this.resources.getDimension(R.dimen.corner_radius_8)).toInt()

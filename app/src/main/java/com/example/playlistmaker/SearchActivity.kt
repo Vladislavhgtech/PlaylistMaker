@@ -19,7 +19,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.LinearLayout
 import com.google.android.material.button.MaterialButton
-import android.content.Intent
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -75,7 +74,7 @@ class SearchActivity : AppCompatActivity() {
         wgHistory = findViewById(R.id.wg_history_search)
         historyRecyclerView = findViewById(R.id.rw_history_list_search)
         clearHistoryButton = findViewById(R.id.btn_clear_history_search)
-        
+
 
 
         trackRecyclerView = findViewById(R.id.track_recycler_view)
@@ -89,8 +88,7 @@ class SearchActivity : AppCompatActivity() {
         historyRecyclerView.adapter = historyAdapter
 
         trackAdapter.setOnItemClickListener { track ->
-            val intent = Intent(this, AudioPlayerActivity::class.java)
-            startActivity(intent) // Просто открываем активити с версткой
+            onTrackClicked(track)  // Сохранить трек в историю и обновить UI
         }
 
 

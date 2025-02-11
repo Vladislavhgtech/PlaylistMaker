@@ -53,7 +53,11 @@ class TrackAdapter(
                 .placeholder(R.drawable.placeholder)
                 .into(trackImage)
 
+
             itemView.setOnClickListener {
+                onItemClickListener?.invoke(track)
+
+
                 val intent = Intent(itemView.context, AudioPlayerActivity::class.java).apply {
                     putExtra(App.INTENT_TRACK_KEY, track) // Передаем объект Track
                 }
