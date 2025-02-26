@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import android.content.Intent
+
 
 class TrackAdapter(
     private var trackList: MutableList<Track>
@@ -51,9 +53,15 @@ class TrackAdapter(
                 .placeholder(R.drawable.placeholder)
                 .into(trackImage)
 
-            // Обработка клика по элементу
+
             itemView.setOnClickListener {
                 onItemClickListener?.invoke(track)
+
+
+                val intent = Intent(itemView.context, AudioPlayerActivity::class.java).apply {
+                    putExtra(App.INTENT_TRACK_KEY, track) // Передаем объект Track
+                }
+                itemView.context.startActivity(intent)
             }
         }
     }

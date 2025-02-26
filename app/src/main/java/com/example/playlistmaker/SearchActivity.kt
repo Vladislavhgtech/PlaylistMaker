@@ -74,7 +74,7 @@ class SearchActivity : AppCompatActivity() {
         wgHistory = findViewById(R.id.wg_history_search)
         historyRecyclerView = findViewById(R.id.rw_history_list_search)
         clearHistoryButton = findViewById(R.id.btn_clear_history_search)
-        
+
 
 
         trackRecyclerView = findViewById(R.id.track_recycler_view)
