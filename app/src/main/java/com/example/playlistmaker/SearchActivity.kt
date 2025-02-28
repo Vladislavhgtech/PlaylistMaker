@@ -26,6 +26,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.widget.Button
+import android.os.Handler
+import android.os.Looper
+
+import android.widget.ProgressBar
 
 class SearchActivity : AppCompatActivity() {
 
@@ -48,6 +52,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var wgHistory: LinearLayout
     private lateinit var clearHistoryButton: Button
 
+
+    // Добавляем ProgressBar для отображения процесса выполнения запроса
+    private lateinit var progressBar: ProgressBar
+
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://itunes.apple.com")
         .addConverterFactory(GsonConverterFactory.create())
@@ -55,11 +63,17 @@ class SearchActivity : AppCompatActivity() {
 
     private val iTunesApi: ITunesApi by lazy { RetrofitClient.createApi() }
 
+    // Добавим Handler и Runnable для debounce
+    private val handler = Handler(Looper.getMainLooper())  // Используем Looper.getMainLooper()
+    private val searchRunnable = Runnable { performSearch(searchQuery) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
+
+        progressBar = findViewById(R.id.progress_bar)
 
         val searchEditText = findViewById<EditText>(R.id.input_search_form)
         val clearButton = findViewById<ImageView>(R.id.button_clear_search_form)
@@ -116,7 +130,10 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
                 searchQuery = s.toString()
 
-                // Hide history if search text is entered
+                // Автоматизация поиска с задержкой
+                searchDebounce()
+
+                // Управление отображением истории
                 wgHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else View.GONE
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -178,17 +195,20 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     private fun toggleHistoryVisibility() {
         val historyTracks = searchHistory.getSearchHistoryTracks()
 
-        // Если история поиска не пуста
         if (historyTracks.isNotEmpty()) {
             wgHistory.visibility = View.VISIBLE
             clearHistoryButton.visibility = View.VISIBLE
             placeholderNothingWasFound.visibility = View.GONE
             findViewById<TextView>(R.id.history_text).visibility = View.VISIBLE
         } else {
-            // Если история пуста
             wgHistory.visibility = View.GONE
             clearHistoryButton.visibility = View.GONE
             placeholderNothingWasFound.visibility = View.GONE
@@ -222,9 +242,13 @@ class SearchActivity : AppCompatActivity() {
         resetSearchResults()
 
         if (query.isNotEmpty()) {
+            progressBar.visibility = View.VISIBLE  // Показываем ProgressBar
+
             iTunesApi.searchTracks(query).enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-                    // Скрываем плейсхолдеры
+                    // Скрываем ProgressBar
+                    progressBar.visibility = View.GONE
+
                     placeholderNothingWasFound.visibility = View.GONE
                     placeholderCommunicationsProblem.visibility = View.GONE
                     trackRecyclerView.visibility = View.VISIBLE
@@ -235,7 +259,6 @@ class SearchActivity : AppCompatActivity() {
                         if (tracks.isEmpty()) {
                             placeholderNothingWasFound.visibility = View.VISIBLE
                         } else {
-                            // Отображаем список результатов
                             trackList.clear()
                             trackList.addAll(tracks)
                             trackAdapter.notifyDataSetChanged()
@@ -246,6 +269,8 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    // Скрываем ProgressBar
+                    progressBar.visibility = View.GONE
                     placeholderCommunicationsProblem.visibility = View.VISIBLE
                 }
             })
@@ -275,6 +300,8 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val KEY_SEARCH_QUERY = "SEARCH_QUERY"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+
     }
 
 }

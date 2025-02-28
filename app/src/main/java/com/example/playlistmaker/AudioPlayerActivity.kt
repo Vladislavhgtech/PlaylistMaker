@@ -1,8 +1,10 @@
 package com.example.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
-import android.view.View
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,19 +19,19 @@ import com.example.playlistmaker.App.Companion.INTENT_TRACK_KEY
 
 class AudioPlayerActivity : AppCompatActivity() {
 
+    private lateinit var mediaPlayer: MediaPlayer
+    private var handler: Handler? = null
+    private var track: Track? = null
+    private var isPlaying = false
+    private var isTrackStarted = false
+    private var currentPosition = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.audioplayer)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.audio_player_screen)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        // Используем безопасное приведение типа
-        val track: Track? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             this.intent.getSerializableExtra(INTENT_TRACK_KEY) as? Track
         } else {
             this.intent.getSerializableExtra(INTENT_TRACK_KEY) as? Track
@@ -44,11 +46,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackNameV: TextView = findViewById(R.id.trackName)
         val trackArtistV: TextView = findViewById(R.id.artistName)
         val trackDurationV: TextView = findViewById(R.id.duration)
-        val trackReleaseDataV: TextView = findViewById(R.id.release_date_data)
-        val trackGenreV: TextView = findViewById(R.id.primary_genre_name)
-        val trackCountryV: TextView = findViewById(R.id.country_data)
         val trackCurrentTimeV: TextView = findViewById(R.id.trackTime)
-
 
         track?.let {
             val cornerRadiusDp = (this.resources.getDimension(R.dimen.corner_radius_8)).toInt()
@@ -61,21 +59,103 @@ class AudioPlayerActivity : AppCompatActivity() {
 
             trackNameV.text = it.trackName ?: getString(R.string.message_nothing_found)
             trackArtistV.text = it.artistName ?: getString(R.string.message_nothing_found)
-            trackDurationV.text = it.getFormattedTrackTime() ?: getString(R.string.message_nothing_found)
-            trackReleaseDataV.text = it.getTrackYear() ?: getString(R.string.message_nothing_found)
-            trackGenreV.text = it.primaryGenreName ?: getString(R.string.message_nothing_found)
-            trackCountryV.text = it.country ?: getString(R.string.message_nothing_found)
-            trackCurrentTimeV.text = getString(R.string.track_current_time_placeholder)
-        } ?: run {
-            // Обработка случая, если track == null
-            trackCoverV.setImageResource(R.drawable.placeholder_45)
-            trackNameV.text = getString(R.string.message_nothing_found)
-            trackArtistV.text = getString(R.string.message_nothing_found)
-            trackDurationV.text = getString(R.string.message_nothing_found)
-            trackReleaseDataV.text = getString(R.string.message_nothing_found)
-            trackGenreV.text = getString(R.string.message_nothing_found)
-            trackCountryV.text = getString(R.string.message_nothing_found)
-            trackCurrentTimeV.text = getString(R.string.track_current_time_placeholder)
+
+        }
+
+
+        mediaPlayer = MediaPlayer()
+        handler = Handler(Looper.getMainLooper())
+
+
+        val playButton: ImageButton = findViewById(R.id.play_track)
+        playButton.setOnClickListener {
+            if (isPlaying) {
+                pauseTrack()
+            } else {
+                startTrack()
+            }
+        }
+
+
+        trackCurrentTimeV.text = "00:30"
+    }
+
+    private fun startTrack() {
+        track?.previewUrl?.let { url ->
+            try {
+                // Проверяем, что mediaPlayer не находится в завершенном состоянии
+                if (!isTrackStarted) {
+                    mediaPlayer.reset()
+                    mediaPlayer.setDataSource(url)
+                    mediaPlayer.prepareAsync()
+                    mediaPlayer.setOnPreparedListener {
+                        mediaPlayer.seekTo(currentPosition)
+                        mediaPlayer.start()
+                        updateTime()
+                        isPlaying = true
+                        isTrackStarted = true
+                        findViewById<ImageButton>(R.id.play_track).setImageResource(R.drawable.pause)
+                    }
+                } else {
+                    if (::mediaPlayer.isInitialized && !mediaPlayer.isPlaying) {
+                        mediaPlayer.start()
+                        updateTime()
+                        isPlaying = true
+                        findViewById<ImageButton>(R.id.play_track).setImageResource(R.drawable.pause)
+                    }
+                }
+
+                mediaPlayer.setOnCompletionListener {
+                    isPlaying = false
+                    findViewById<ImageButton>(R.id.play_track).setImageResource(R.drawable.start_stop)
+                    currentPosition = 0
+                    findViewById<TextView>(R.id.trackTime).text = "00:00"
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun pauseTrack() {
+        mediaPlayer.pause()
+        isPlaying = false
+        currentPosition = mediaPlayer.currentPosition
+        findViewById<ImageButton>(R.id.play_track).setImageResource(R.drawable.start_stop)
+    }
+
+    private fun updateTime() {
+        val progressTextV: TextView = findViewById(R.id.progress)
+
+        val handlerRunnable = object : Runnable {
+            override fun run() {
+                if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
+                    val currentPositionSec = mediaPlayer.currentPosition / 1000
+                    progressTextV.text = String.format("%02d:%02d", currentPositionSec / 60, currentPositionSec % 60) // обновляем progress
+                    handler?.postDelayed(this, 1000)
+                }
+            }
+        }
+
+        if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
+            handler?.post(handlerRunnable)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
+            isPlaying = false
+        }
+        handler?.removeCallbacksAndMessages(null)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (::mediaPlayer.isInitialized) {
+            mediaPlayer.release()
         }
     }
 }
