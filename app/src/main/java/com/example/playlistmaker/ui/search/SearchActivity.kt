@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.content.Context
 import android.os.Bundle
@@ -30,6 +30,13 @@ import android.os.Handler
 import android.os.Looper
 
 import android.widget.ProgressBar
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.network.ITunesApi
+import com.example.playlistmaker.data.network.RetrofitClient
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.data.dto.TrackResponse
+import com.example.playlistmaker.domain.models.toDomain
+
 
 class SearchActivity : AppCompatActivity() {
 
@@ -63,8 +70,8 @@ class SearchActivity : AppCompatActivity() {
 
     private val iTunesApi: ITunesApi by lazy { RetrofitClient.createApi() }
 
-    // Добавим Handler и Runnable для debounce
-    private val handler = Handler(Looper.getMainLooper())  // Используем Looper.getMainLooper()
+
+    private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { performSearch(searchQuery) }
 
 
@@ -102,7 +109,7 @@ class SearchActivity : AppCompatActivity() {
         historyRecyclerView.adapter = historyAdapter
 
         trackAdapter.setOnItemClickListener { track ->
-            onTrackClicked(track)  // Сохранить трек в историю и обновить UI
+            onTrackClicked(track)
         }
 
 
@@ -130,10 +137,10 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
                 searchQuery = s.toString()
 
-                // Автоматизация поиска с задержкой
+
                 searchDebounce()
 
-                // Управление отображением истории
+
                 wgHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else View.GONE
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -254,13 +261,14 @@ class SearchActivity : AppCompatActivity() {
                     trackRecyclerView.visibility = View.VISIBLE
 
                     if (response.isSuccessful && response.body() != null) {
-                        val tracks = response.body()?.results ?: emptyList()
+                        val trackDtos = response.body()?.results ?: emptyList()
 
-                        if (tracks.isEmpty()) {
+
+                        if (trackDtos.isEmpty()) {
                             placeholderNothingWasFound.visibility = View.VISIBLE
                         } else {
                             trackList.clear()
-                            trackList.addAll(tracks)
+                            trackList.addAll(trackDtos.map { it.toDomain() })
                             trackAdapter.notifyDataSetChanged()
                         }
                     } else {
@@ -279,8 +287,6 @@ class SearchActivity : AppCompatActivity() {
 
 
 
-
-    // Сохраняем текст при изменении конфигурации
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_SEARCH_QUERY, searchQuery)
