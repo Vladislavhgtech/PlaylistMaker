@@ -1,18 +1,26 @@
 package com.example.playlistmaker.domain.impl
 
 import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.data.repository.TracksRepositoryImpl
+import com.example.playlistmaker.domain.api.TracksRepository
+import com.example.playlistmaker.domain.api.SearchHistoryRepository
 import com.example.playlistmaker.domain.models.Track
-import java.util.concurrent.Executors
 
-class TracksInteractorImpl(private val repository: TracksRepositoryImpl) : TracksInteractor {
+class TracksInteractorImpl(
+    private val tracksRepository: TracksRepository,
+    private val searchHistoryRepository: SearchHistoryRepository
+) : TracksInteractor {
 
-    private val executor = Executors.newCachedThreadPool()
-
-    override fun searchTracks(expression: String, consumer: TracksInteractor.TracksConsumer) {
-        executor.execute {
-            val tracks = repository.searchTracks(expression)
-            consumer.consume(tracks)
+    override fun searchTracks(query: String, consumer: TracksInteractor.TracksConsumer) {
+        try {
+            val tracks = tracksRepository.searchTracks(query)
+            if (tracks.isNotEmpty()) {
+                consumer.onTracksFound(tracks)  // Передаем результат поиска в consumer
+                searchHistoryRepository.saveSearchHistory(query) // Сохраняем запрос в историю
+            } else {
+                consumer.onError("No tracks found")  // Обрабатываем случай, когда нет треков
+            }
+        } catch (e: Exception) {
+            consumer.onError(e.message ?: "Unknown error")
         }
     }
 }

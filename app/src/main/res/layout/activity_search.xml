@@ -60,7 +60,8 @@
             android:paddingEnd="32dp"
             android:singleLine="true"
             android:textColor="@color/search_form_text_color"
-            android:textCursorDrawable="@drawable/cursor_color" />
+            android:textCursorDrawable="@drawable/cursor_color"
+            style="@style/CustomEditText"/>
 
 
         <ImageView
@@ -131,7 +132,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_marginTop="248dp"
+        android:indeterminateTint="@color/yp_blue"/>
 
     <TextView
         android:id="@+id/placeholderNothingWasFound"

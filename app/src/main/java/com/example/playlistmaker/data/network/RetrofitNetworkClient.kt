@@ -4,6 +4,7 @@ import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.Response
 import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.data.dto.TracksSearchRequest
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -17,6 +18,10 @@ class RetrofitNetworkClient : NetworkClient {
         .build()
 
     private val api = retrofit.create(ITunesApi::class.java)
+
+    override fun searchTracks(query: String): Call<TrackResponse> {
+        return api.searchTracks(query)
+    }
 
     override fun doRequest(dto: Any): Response {
         return if (dto is TracksSearchRequest) {

@@ -33,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
         val app = applicationContext as App
-        themeSwitcher.isChecked = app.darkTheme
+        themeSwitcher.isChecked = app.themeInteractor.getDarkTheme()
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             // Переключаем тему через метод switchTheme

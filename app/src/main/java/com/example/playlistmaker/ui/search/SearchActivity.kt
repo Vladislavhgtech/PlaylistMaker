@@ -35,7 +35,15 @@ import com.example.playlistmaker.data.network.ITunesApi
 import com.example.playlistmaker.data.network.RetrofitClient
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.dto.TrackResponse
+import com.example.playlistmaker.data.repository.TracksRepositoryImpl
 import com.example.playlistmaker.domain.models.toDomain
+
+import com.example.playlistmaker.data.repository.SearchHistoryRepositoryImpl as DataSearchHistoryRepository
+import com.example.playlistmaker.domain.api.SearchHistoryRepository
+import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.impl.TracksInteractorImpl
+
+import com.example.playlistmaker.data.network.NetworkClientImpl
 
 
 class SearchActivity : AppCompatActivity() {
@@ -50,18 +58,16 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var buttonRetry: MaterialButton
 
 
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistoryRepository: SearchHistoryRepository
     private lateinit var historyAdapter: TrackAdapter
 
-    private lateinit var searchEditText: EditText
-    private lateinit var clearButton: ImageView
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var wgHistory: LinearLayout
     private lateinit var clearHistoryButton: Button
 
-
-    // Добавляем ProgressBar для отображения процесса выполнения запроса
     private lateinit var progressBar: ProgressBar
+    private lateinit var tracksInteractor: TracksInteractor
+
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://itunes.apple.com")
@@ -79,6 +85,15 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
+
+        searchHistoryRepository = DataSearchHistoryRepository(getSharedPreferences("AppSettings", MODE_PRIVATE))
+
+
+
+        val networkClient = NetworkClientImpl(iTunesApi)
+        val tracksRepository = TracksRepositoryImpl(networkClient)
+        tracksInteractor = TracksInteractorImpl(tracksRepository, searchHistoryRepository)
+
 
         progressBar = findViewById(R.id.progress_bar)
 
@@ -103,8 +118,10 @@ class SearchActivity : AppCompatActivity() {
         trackRecyclerView.layoutManager = LinearLayoutManager(this)
         trackRecyclerView.adapter = trackAdapter
 
-        searchHistory =  SearchHistory(getSharedPreferences("AppSettings", MODE_PRIVATE))
-        historyAdapter = TrackAdapter(searchHistory.getSearchHistoryTracks().toMutableList())
+
+        searchHistoryRepository = DataSearchHistoryRepository(getSharedPreferences("AppSettings", MODE_PRIVATE))
+
+        historyAdapter = TrackAdapter(searchHistoryRepository.getSearchHistoryTracks().toMutableList())
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
         historyRecyclerView.adapter = historyAdapter
 
@@ -113,9 +130,10 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
+
         findViewById<Button>(R.id.btn_clear_history_search).setOnClickListener {
-            searchHistory.clearSearchHistory()
-            historyAdapter.updateTrackList(searchHistory.getSearchHistoryTracks().toMutableList())
+            searchHistoryRepository.clearSearchHistory()
+            historyAdapter.updateTrackList(searchHistoryRepository.getSearchHistoryTracks().toMutableList())
         }
 
         toolbar.setNavigationOnClickListener {
@@ -137,9 +155,7 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
                 searchQuery = s.toString()
 
-
                 searchDebounce()
-
 
                 wgHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else View.GONE
             }
@@ -158,11 +174,8 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton.setOnClickListener {
 
-            searchHistory.clearSearchHistory()
-
-            historyAdapter.updateTrackList(searchHistory.getSearchHistoryTracks().toMutableList())
-
-
+            searchHistoryRepository.clearSearchHistory()
+            historyAdapter.updateTrackList(searchHistoryRepository.getSearchHistoryTracks().toMutableList())
             toggleHistoryVisibility()
         }
 
@@ -208,18 +221,15 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun toggleHistoryVisibility() {
-        val historyTracks = searchHistory.getSearchHistoryTracks()
-
+        val historyTracks = searchHistoryRepository.getSearchHistoryTracks()
         if (historyTracks.isNotEmpty()) {
             wgHistory.visibility = View.VISIBLE
             clearHistoryButton.visibility = View.VISIBLE
             placeholderNothingWasFound.visibility = View.GONE
-            findViewById<TextView>(R.id.history_text).visibility = View.VISIBLE
         } else {
             wgHistory.visibility = View.GONE
             clearHistoryButton.visibility = View.GONE
             placeholderNothingWasFound.visibility = View.GONE
-            findViewById<TextView>(R.id.history_text).visibility = View.GONE
         }
     }
 
@@ -229,12 +239,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun saveTrack(track: Track) {
-        searchHistory.saveTrack(track)
-        historyAdapter.updateTrackList(searchHistory.getSearchHistoryTracks().toMutableList()) // Обновляем UI
+        searchHistoryRepository.saveTrack(track)  // Заменить searchHistory на searchHistoryRepository
+        historyAdapter.updateTrackList(searchHistoryRepository.getSearchHistoryTracks().toMutableList())  // Заменить searchHistory на searchHistoryRepository
         historyAdapter.notifyDataSetChanged()
         wgHistory.visibility = View.GONE
     }
-
 
     private fun resetSearchResults() {
         trackList.clear()
@@ -253,7 +262,7 @@ class SearchActivity : AppCompatActivity() {
 
             iTunesApi.searchTracks(query).enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-                    // Скрываем ProgressBar
+
                     progressBar.visibility = View.GONE
 
                     placeholderNothingWasFound.visibility = View.GONE

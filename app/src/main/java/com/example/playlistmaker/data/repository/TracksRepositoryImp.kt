@@ -9,11 +9,9 @@ import com.example.playlistmaker.domain.models.toDomain
 class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRepository {
 
     override fun searchTracks(expression: String): List<Track> {
-        val response = networkClient.doRequest(expression)
-        return if (response.resultCode == 200) {
-            (response as TrackResponse).results.map { trackDto ->
-                trackDto.toDomain()
-            }
+        val response = networkClient.searchTracks(expression).execute()
+        return if (response.isSuccessful) {
+            response.body()?.results?.map { it.toDomain() } ?: emptyList()
         } else {
             emptyList()
         }
