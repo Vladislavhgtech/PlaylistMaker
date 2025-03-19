@@ -35,8 +35,8 @@
         style="@style/SettingsBtn"
         tools:ignore="UseSwitchCompatOrMaterialXml"
         android:layout_gravity="start"
-        android:thumbTint="@color/settings_switch"
-        android:trackTint="@color/settings_switch_back"
+        app:thumbTint="@color/switch_tint_color"
+        app:trackTint="@color/switch_track_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/dark_theme" />

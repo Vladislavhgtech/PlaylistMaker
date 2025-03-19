@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.search
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -44,6 +45,8 @@ import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 
 import com.example.playlistmaker.data.network.NetworkClientImpl
+import com.example.playlistmaker.ui.App
+import com.example.playlistmaker.ui.audioplayer.AudioPlayerActivity
 
 
 class SearchActivity : AppCompatActivity() {
@@ -68,11 +71,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var tracksInteractor: TracksInteractor
 
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
 
     private val iTunesApi: ITunesApi by lazy { RetrofitClient.createApi() }
 
@@ -236,11 +234,16 @@ class SearchActivity : AppCompatActivity() {
 
     private fun onTrackClicked(track: Track) {
         saveTrack(track)
+
+        val intent = Intent(this, AudioPlayerActivity::class.java).apply {
+            putExtra(App.INTENT_TRACK_KEY, track)
+        }
+        startActivity(intent)
     }
 
     private fun saveTrack(track: Track) {
-        searchHistoryRepository.saveTrack(track)  // Заменить searchHistory на searchHistoryRepository
-        historyAdapter.updateTrackList(searchHistoryRepository.getSearchHistoryTracks().toMutableList())  // Заменить searchHistory на searchHistoryRepository
+        searchHistoryRepository.saveTrack(track)
+        historyAdapter.updateTrackList(searchHistoryRepository.getSearchHistoryTracks().toMutableList())
         historyAdapter.notifyDataSetChanged()
         wgHistory.visibility = View.GONE
     }
@@ -286,7 +289,7 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    // Скрываем ProgressBar
+
                     progressBar.visibility = View.GONE
                     placeholderCommunicationsProblem.visibility = View.VISIBLE
                 }

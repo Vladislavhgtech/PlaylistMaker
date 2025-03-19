@@ -16,6 +16,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.ui.App.Companion.INTENT_TRACK_KEY
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class AudioPlayerActivity : AppCompatActivity() {
 
@@ -47,6 +49,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackArtistV: TextView = findViewById(R.id.artistName)
         val trackDurationV: TextView = findViewById(R.id.duration)
         val trackCurrentTimeV: TextView = findViewById(R.id.trackTime)
+        val trackCountry: TextView = findViewById(R.id.country_data)
+        val trackAlbums: TextView = findViewById(R.id.album_name)
+        val trackYear: TextView = findViewById(R.id.release_date_data)
+        val trackGenreName: TextView = findViewById(R.id.primary_genre_name)
 
         track?.let {
             val cornerRadiusDp = (this.resources.getDimension(R.dimen.corner_radius_8)).toInt()
@@ -78,6 +84,26 @@ class AudioPlayerActivity : AppCompatActivity() {
 
 
         trackCurrentTimeV.text = "00:30"
+        trackCountry.text = track?.country ?: getString(R.string.message_nothing_found)
+        trackAlbums.text= track?.collectionName ?: getString(R.string.message_nothing_found)
+
+        track?.releaseDate?.let { releaseDateString ->
+
+            val formatter = DateTimeFormatter.ISO_DATE_TIME
+            val zonedDateTime = ZonedDateTime.parse(releaseDateString, formatter)
+
+            trackYear.text = zonedDateTime.year.toString()
+        } ?: run {
+            trackYear.text = getString(R.string.message_nothing_found)
+        }
+
+        trackGenreName.text = track?.primaryGenreName ?: getString(R.string.message_nothing_found)
+
+
+
+
+
+
     }
 
     private fun startTrack() {
@@ -110,6 +136,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                     findViewById<ImageButton>(R.id.play_track).setImageResource(R.drawable.start_stop)
                     currentPosition = 0
                     findViewById<TextView>(R.id.trackTime).text = "00:00"
+
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
