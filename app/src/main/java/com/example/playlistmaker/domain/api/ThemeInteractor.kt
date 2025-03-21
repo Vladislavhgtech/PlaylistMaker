@@ -1,7 +1,7 @@
 package com.example.playlistmaker.domain.api
 
 
-interface ThemeInteractor {
+interface ThemeInteractor{
     fun getDarkTheme(): Boolean
     fun setDarkTheme(isDarkThemeEnabled: Boolean)
 }

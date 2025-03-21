@@ -5,15 +5,11 @@ import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.models.toDomain
+import retrofit2.Call
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRepository {
 
-    override fun searchTracks(expression: String): List<Track> {
-        val response = networkClient.searchTracks(expression).execute()
-        return if (response.isSuccessful) {
-            response.body()?.results?.map { it.toDomain() } ?: emptyList()
-        } else {
-            emptyList()
-        }
+    override fun searchTracks(expression: String): Call<TrackResponse> {
+        return networkClient.searchTracks(expression)
     }
 }

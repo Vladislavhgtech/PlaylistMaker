@@ -21,30 +21,23 @@ import android.widget.TextView
 import android.widget.LinearLayout
 import com.google.android.material.button.MaterialButton
 
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 import android.widget.Button
 import android.os.Handler
 import android.os.Looper
 
 import android.widget.ProgressBar
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.network.ITunesApi
-import com.example.playlistmaker.data.network.RetrofitClient
+
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.data.dto.TrackResponse
-import com.example.playlistmaker.data.repository.TracksRepositoryImpl
-import com.example.playlistmaker.domain.models.toDomain
+
 
 import com.example.playlistmaker.data.repository.SearchHistoryRepositoryImpl as DataSearchHistoryRepository
-import com.example.playlistmaker.domain.api.SearchHistoryRepository
+import com.example.playlistmaker.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 
-import com.example.playlistmaker.data.network.NetworkClientImpl
+
 import com.example.playlistmaker.ui.App
 import com.example.playlistmaker.ui.audioplayer.AudioPlayerActivity
 
@@ -61,7 +54,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var buttonRetry: MaterialButton
 
 
-    private lateinit var searchHistoryRepository: SearchHistoryRepository
+    private lateinit var searchHistoryInteractor: SearchHistoryInteractor
     private lateinit var historyAdapter: TrackAdapter
 
     private lateinit var historyRecyclerView: RecyclerView
@@ -72,7 +65,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var tracksInteractor: TracksInteractor
 
 
-    private val iTunesApi: ITunesApi by lazy { RetrofitClient.createApi() }
 
 
     private val handler = Handler(Looper.getMainLooper())
@@ -84,13 +76,10 @@ class SearchActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
 
-        searchHistoryRepository = DataSearchHistoryRepository(getSharedPreferences("AppSettings", MODE_PRIVATE))
+        searchHistoryInteractor = DataSearchHistoryRepository(getSharedPreferences("AppSettings", MODE_PRIVATE))
 
 
-
-        val networkClient = NetworkClientImpl(iTunesApi)
-        val tracksRepository = TracksRepositoryImpl(networkClient)
-        tracksInteractor = TracksInteractorImpl(tracksRepository, searchHistoryRepository)
+        tracksInteractor = Creator.provideTracksInteractor(this)
 
 
         progressBar = findViewById(R.id.progress_bar)
@@ -117,9 +106,9 @@ class SearchActivity : AppCompatActivity() {
         trackRecyclerView.adapter = trackAdapter
 
 
-        searchHistoryRepository = DataSearchHistoryRepository(getSharedPreferences("AppSettings", MODE_PRIVATE))
+        searchHistoryInteractor = DataSearchHistoryRepository(getSharedPreferences("AppSettings", MODE_PRIVATE))
 
-        historyAdapter = TrackAdapter(searchHistoryRepository.getSearchHistoryTracks().toMutableList())
+        historyAdapter = TrackAdapter(searchHistoryInteractor.getSearchHistoryTracks().toMutableList())
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
         historyRecyclerView.adapter = historyAdapter
 
@@ -130,8 +119,8 @@ class SearchActivity : AppCompatActivity() {
 
 
         findViewById<Button>(R.id.btn_clear_history_search).setOnClickListener {
-            searchHistoryRepository.clearSearchHistory()
-            historyAdapter.updateTrackList(searchHistoryRepository.getSearchHistoryTracks().toMutableList())
+            searchHistoryInteractor.clearSearchHistory()
+            historyAdapter.updateTrackList(searchHistoryInteractor.getSearchHistoryTracks().toMutableList())
         }
 
         toolbar.setNavigationOnClickListener {
@@ -172,8 +161,8 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton.setOnClickListener {
 
-            searchHistoryRepository.clearSearchHistory()
-            historyAdapter.updateTrackList(searchHistoryRepository.getSearchHistoryTracks().toMutableList())
+            searchHistoryInteractor.clearSearchHistory()
+            historyAdapter.updateTrackList(searchHistoryInteractor.getSearchHistoryTracks().toMutableList())
             toggleHistoryVisibility()
         }
 
@@ -219,7 +208,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun toggleHistoryVisibility() {
-        val historyTracks = searchHistoryRepository.getSearchHistoryTracks()
+        val historyTracks = searchHistoryInteractor.getSearchHistoryTracks()
         if (historyTracks.isNotEmpty()) {
             wgHistory.visibility = View.VISIBLE
             clearHistoryButton.visibility = View.VISIBLE
@@ -242,8 +231,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun saveTrack(track: Track) {
-        searchHistoryRepository.saveTrack(track)
-        historyAdapter.updateTrackList(searchHistoryRepository.getSearchHistoryTracks().toMutableList())
+        searchHistoryInteractor.saveTrack(track)
+        historyAdapter.updateTrackList(searchHistoryInteractor.getSearchHistoryTracks().toMutableList())
         historyAdapter.notifyDataSetChanged()
         wgHistory.visibility = View.GONE
     }
@@ -261,42 +250,28 @@ class SearchActivity : AppCompatActivity() {
         resetSearchResults()
 
         if (query.isNotEmpty()) {
-            progressBar.visibility = View.VISIBLE  // Показываем ProgressBar
+            progressBar.visibility = View.VISIBLE
 
-            iTunesApi.searchTracks(query).enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-
-                    progressBar.visibility = View.GONE
-
+            tracksInteractor.searchTracks(query) { tracks, error ->
+                progressBar.visibility = View.GONE
+                if (error != null) {
+                    placeholderCommunicationsProblem.visibility = View.VISIBLE
+                } else {
                     placeholderNothingWasFound.visibility = View.GONE
                     placeholderCommunicationsProblem.visibility = View.GONE
                     trackRecyclerView.visibility = View.VISIBLE
 
-                    if (response.isSuccessful && response.body() != null) {
-                        val trackDtos = response.body()?.results ?: emptyList()
-
-
-                        if (trackDtos.isEmpty()) {
-                            placeholderNothingWasFound.visibility = View.VISIBLE
-                        } else {
-                            trackList.clear()
-                            trackList.addAll(trackDtos.map { it.toDomain() })
-                            trackAdapter.notifyDataSetChanged()
-                        }
+                    if (tracks.isNullOrEmpty()) {
+                        placeholderNothingWasFound.visibility = View.VISIBLE
                     } else {
-                        placeholderCommunicationsProblem.visibility = View.VISIBLE
+                        trackList.clear()
+                        trackList.addAll(tracks)
+                        trackAdapter.notifyDataSetChanged()
                     }
                 }
-
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-
-                    progressBar.visibility = View.GONE
-                    placeholderCommunicationsProblem.visibility = View.VISIBLE
-                }
-            })
+            }
         }
     }
-
 
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -304,13 +279,11 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(KEY_SEARCH_QUERY, searchQuery)
     }
 
-    // Метод для скрытия клавиатуры
     private fun hideKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    // Метод для показа клавиатуры
     private fun showKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)

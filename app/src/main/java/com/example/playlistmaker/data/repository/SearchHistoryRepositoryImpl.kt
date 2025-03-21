@@ -3,12 +3,12 @@ package com.example.playlistmaker.data.repository
 
 import android.content.SharedPreferences
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.api.SearchHistoryRepository
+import com.example.playlistmaker.domain.api.SearchHistoryInteractor
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
-class SearchHistoryRepositoryImpl(private val sharedPrefs: SharedPreferences) : SearchHistoryRepository {
+class SearchHistoryRepositoryImpl(private val sharedPrefs: SharedPreferences) : SearchHistoryInteractor {
 
     override fun getSearchHistoryTracks(): List<Track> {
         return readTrackListFromSP()
