@@ -3,9 +3,7 @@ package com.example.playlistmaker.ui
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.domain.api.ThemeInteractor
-import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
-import com.example.playlistmaker.data.repository.ThemeRepositoryImpl
-import android.content.SharedPreferences
+import com.example.playlistmaker.Creator
 
 class App : Application() {
 
@@ -17,12 +15,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val preferences: SharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
+        _themeInteractor = Creator.provideThemeInteractor(this)
 
-        val themeRepository = ThemeRepositoryImpl(preferences)
-        _themeInteractor = ThemeInteractorImpl(themeRepository)
-
-        // Устанавливаем тему, основываясь на настройках из ThemeInteractor
         setTheme(themeInteractor.getDarkTheme())
     }
 
