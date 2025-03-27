@@ -8,7 +8,10 @@
     <color name="black">#000000</color> 
     <color name="toolbar_color">#ffffff</color> 
     <color name="settings_icon_color">#ffffff</color>
-    <color name="settings_switch">#3772E7</color>
+
+    <color name="settings_switch_track">#9FBBF3</color>
+    <color name="settings_switch_tint">#3772E7</color>
+
     <color name="setButtonColor">#1A1B22</color>
 
     <color name="search_form_text_color">#1A1B22</color>

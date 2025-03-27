@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/audio_player_screen"
-    android:background="@color/player_background_color"
+    android:background="@color/backgroundColorSettings"
     android:theme="@style/Theme.PlaylistMaker">
 
     <com.google.android.material.appbar.MaterialToolbar

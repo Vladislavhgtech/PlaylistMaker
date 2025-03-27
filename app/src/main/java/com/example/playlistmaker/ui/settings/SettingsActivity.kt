@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.settings
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -9,13 +9,23 @@ import androidx.core.view.WindowInsetsCompat
 import android.widget.Button
 import android.content.Intent
 import android.net.Uri
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.ui.App
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.ThemeInteractor
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var themeInteractor: ThemeInteractor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
+
+        themeInteractor = Creator.provideThemeInteractor(applicationContext)
+
 
         val toolbar: Toolbar = findViewById(R.id.settings_toolbar)
         toolbar.setNavigationOnClickListener {
@@ -30,11 +40,12 @@ class SettingsActivity : AppCompatActivity() {
 
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
-        val app = applicationContext as App
-        themeSwitcher.isChecked = app.darkTheme
+
+
+        themeSwitcher.isChecked = themeInteractor.getDarkTheme()
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            // Переключаем тему через метод switchTheme
+
             (applicationContext as App).switchTheme(checked)
         }
 

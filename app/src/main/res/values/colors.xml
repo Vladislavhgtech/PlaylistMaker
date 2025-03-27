@@ -9,7 +9,9 @@
         <color name="black">#000000</color>
         <color name="toolbar_color">#1A1B22</color>
         <color name="settings_icon_color">#AEAFB4</color>
-        <color name="settings_switch">#AEAFB4</color>
+        <color name="settings_switch_track">#E6E8EB</color>
+        <color name="settings_switch_tint">#AEAFB4</color>
+
         <color name="search_form_text_hint_color">#AEAFB4</color>
         <color name="search_form_text_color">#1A1B22</color>
 
@@ -38,6 +40,7 @@
         <color name="snackbar">#FF000000</color>
         <color name="placeholder_color_playlist">#AEAFB4</color>
         <color name="treble_clef_color">#1A1B22</color>
+        <color name="yp_blue">#3772E7</color>
 
 
 

@@ -1,8 +1,7 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.domain.models
+
 
 import java.io.Serializable
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 data class Track(
@@ -26,13 +25,6 @@ data class Track(
         return String.format("%02d:%02d", minutes, seconds)
     }
 
-    fun getTrackYear(): String?{
-        val parser = SimpleDateFormat(INPUT_DATE_FORMAT, Locale.getDefault())
-        val date = releaseDate?.let { parser.parse(it) } ?: return null
-        val formatter = SimpleDateFormat(YEAR_FORMAT, Locale.getDefault())
-        return formatter.format(date)
-    }
-
 
     private companion object {
         const val TRACK_TIME_FORMAT = "mm:ss"
@@ -42,8 +34,3 @@ data class Track(
         const val COVER_REPLACEMENT = "512x512bb.jpg"
     }
 }
-
-data class TrackResponse(
-    val resultCount: Int,
-    val results: List<Track>
-)

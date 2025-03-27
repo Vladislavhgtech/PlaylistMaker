@@ -1,21 +1,23 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import android.content.SharedPreferences
+import com.example.playlistmaker.domain.api.ThemeInteractor
+import com.example.playlistmaker.Creator
 
 class App : Application() {
 
-    var darkTheme = false
+    val themeInteractor: ThemeInteractor
+        get() = _themeInteractor
+
+    private lateinit var _themeInteractor: ThemeInteractor
 
     override fun onCreate() {
         super.onCreate()
 
-        val preferences: SharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
-        darkTheme = preferences.getBoolean("darkTheme", false)  // по умолчанию светлая тема
+        _themeInteractor = Creator.provideThemeInteractor(this)
 
-
-        setTheme(darkTheme)
+        setTheme(themeInteractor.getDarkTheme())
     }
 
     private fun setTheme(isDarkModeEnabled: Boolean) {
@@ -29,13 +31,7 @@ class App : Application() {
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
-        darkTheme = darkThemeEnabled
-
-        val preferences: SharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
-        val editor = preferences.edit()
-        editor.putBoolean("darkTheme", darkTheme)
-        editor.apply()
-
+        themeInteractor.setDarkTheme(darkThemeEnabled)
         setTheme(darkThemeEnabled)
     }
 
