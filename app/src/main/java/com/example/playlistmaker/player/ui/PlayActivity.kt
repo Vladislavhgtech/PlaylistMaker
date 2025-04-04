@@ -136,6 +136,7 @@ class PlayActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setupAddToPlaylistButton() {
         binding.btnAddToPlaylist.setDebouncedClickListener {
             val newImageResource = if (isAddedToPlaylist) {

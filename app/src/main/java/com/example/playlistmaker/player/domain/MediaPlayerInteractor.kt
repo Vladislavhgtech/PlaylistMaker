@@ -9,4 +9,6 @@ interface MediaPlayerInteractor {
     fun play()
     fun pause()
     fun stop()
+
+    fun isPlaybackFinished(): Boolean
 }

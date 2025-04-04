@@ -25,4 +25,8 @@ class MediaPlayerInteractorImpl(private val mediaPlayer: MediaPlayerRepository) 
     override fun stop() {
         mediaPlayer.destroy()
     }
+
+    override fun isPlaybackFinished(): Boolean {
+        return mediaPlayer.getPlaybackPosition() == 0
+    }
 }

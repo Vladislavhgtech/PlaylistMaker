@@ -116,11 +116,17 @@ class SearchActivity : AppCompatActivity() {
 
                 is SearchScreenState.ShowHistory -> {
                     Timber.d("=== SearchScreenState.ShowHistory")
-                    showTracksFromHistory(screenState.historyList)
-                    unitedRecyclerView.isVisible = true
-                    binding.killTheHistory.isVisible = true
+                    if (screenState.historyList.isNotEmpty()) {
+                        showTracksFromHistory(screenState.historyList)
+                        unitedRecyclerView.isVisible = true
+                        binding.killTheHistory.isVisible = true
+                    } else {
+                        unitedRecyclerView.isVisible = false
+                        binding.killTheHistory.isVisible = false
+                    }
                     stopLoadingIndicator()
                 }
+
 
                 is SearchScreenState.SearchAPI -> {
                     Timber.d("=== SearchScreenState.SearchAPI")

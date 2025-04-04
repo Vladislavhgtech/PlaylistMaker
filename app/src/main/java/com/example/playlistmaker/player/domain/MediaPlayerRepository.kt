@@ -5,7 +5,10 @@ interface MediaPlayerRepository {
     fun getPlaybackPosition(): Int
     fun getPlayerReady()
 
+
     fun play()
     fun pause()
     fun destroy()
+
+
 }
