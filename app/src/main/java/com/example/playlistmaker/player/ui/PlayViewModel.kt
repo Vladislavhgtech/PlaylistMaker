@@ -21,19 +21,20 @@ class PlayViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) : 
 
     init {
         mediaPlayerInteractor.getPlayerReady()
+
         mediaPlayerInteractor.setOnCompletionListener {
-            _screenState.postValue(ScreenState.Content(PlayerState.PAUSED, 0))
+
+            mediaPlayerInteractor.play()
+            mediaPlayerInteractor.pause()
         }
+
 
     }
 
     private fun playerPlay() {
-        if (mediaPlayerInteractor.getState() != PlayerState.PLAYING) {
-            mediaPlayerInteractor.play()
-            DebounceExtension(AppPreferencesKeys.CLICK_DEBOUNCE_DELAY, ::timerTask).debounce()
-        }
+        mediaPlayerInteractor.play()
+        DebounceExtension(AppPreferencesKeys.CLICK_DEBOUNCE_DELAY, ::timerTask).debounce()
     }
-
     private fun playerPause() {
         mediaPlayerInteractor.pause()
         updatePlayerInfo()

@@ -28,5 +28,6 @@ class MediaPlayerInteractorImpl(private val mediaPlayer: MediaPlayerRepository) 
 
     override fun setOnCompletionListener(onComplete: () -> Unit) {
         mediaPlayer.setOnCompletionListener(onComplete)
+
     }
 }
