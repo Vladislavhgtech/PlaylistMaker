@@ -10,5 +10,7 @@ interface MediaPlayerRepository {
     fun pause()
     fun destroy()
 
+    fun setOnCompletionListener(onComplete: () -> Unit)
+
 
 }

@@ -26,7 +26,7 @@ class MediaPlayerInteractorImpl(private val mediaPlayer: MediaPlayerRepository) 
         mediaPlayer.destroy()
     }
 
-    override fun isPlaybackFinished(): Boolean {
-        return mediaPlayer.getPlaybackPosition() == 0
+    override fun setOnCompletionListener(onComplete: () -> Unit) {
+        mediaPlayer.setOnCompletionListener(onComplete)
     }
 }

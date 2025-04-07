@@ -10,5 +10,5 @@ interface MediaPlayerInteractor {
     fun pause()
     fun stop()
 
-    fun isPlaybackFinished(): Boolean
+    fun setOnCompletionListener(onComplete: () -> Unit)
 }

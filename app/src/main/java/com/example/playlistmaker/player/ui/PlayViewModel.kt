@@ -18,12 +18,20 @@ class PlayViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) : 
     private val _screenState = MutableLiveData<ScreenState>(ScreenState.Initial)
     val screenState: LiveData<ScreenState> = _screenState
 
+
     init {
-      mediaPlayerInteractor.getPlayerReady()
+        mediaPlayerInteractor.getPlayerReady()
+        mediaPlayerInteractor.setOnCompletionListener {
+            _screenState.postValue(ScreenState.Content(PlayerState.PAUSED, 0))
+        }
+
     }
+
     private fun playerPlay() {
-        mediaPlayerInteractor.play()
-        DebounceExtension(AppPreferencesKeys.CLICK_DEBOUNCE_DELAY, ::timerTask).debounce()
+        if (mediaPlayerInteractor.getState() != PlayerState.PLAYING) {
+            mediaPlayerInteractor.play()
+            DebounceExtension(AppPreferencesKeys.CLICK_DEBOUNCE_DELAY, ::timerTask).debounce()
+        }
     }
 
     private fun playerPause() {
@@ -52,11 +60,6 @@ class PlayViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) : 
         playerPause()
     }
 
-    fun checkIfPlaybackFinished() {
-        if (mediaPlayerInteractor.isPlaybackFinished()) {
-            _screenState.value = ScreenState.Content(PlayerState.PAUSED, 0)
-        }
-    }
 
     override fun onCleared() {
         super.onCleared()
@@ -65,7 +68,6 @@ class PlayViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) : 
 
     private fun timerTask() {
         updatePlayerInfo()
-        checkIfPlaybackFinished()
         if (mediaPlayerInteractor.getState() == PlayerState.PLAYING) {
             DebounceExtension(AppPreferencesKeys.CLICK_DEBOUNCE_DELAY, ::timerTask).debounce()
         }

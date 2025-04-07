@@ -63,4 +63,11 @@ class MediaPlayerRepositoryImpl(url: String) : MediaPlayerRepository {
 
     }
 
+    override fun setOnCompletionListener(onComplete: () -> Unit) {
+        mediaPlayer.setOnCompletionListener {
+            playerState = PlayerState.PAUSED
+            onComplete()
+        }
+    }
+
 }
