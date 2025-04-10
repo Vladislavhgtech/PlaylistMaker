@@ -2,60 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_settings"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/backgroundColorSettings"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_16dp"
-    android:paddingRight="@dimen/padding_16dp"
-    android:paddingBottom="@dimen/padding_28dp">
+    style="@style/BackMenuLayout"
+    tools:context=".settings.ui.SettingsActivity">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/settings_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_marginBottom="24dp"
-        app:navigationIconTint="@color/toolbar_color"
-        app:navigationIcon="@drawable/back_arrow">
+    <Button
+        android:id="@+id/buttonBack"
+        style="@style/GoBackButtons"
+        android:text="@string/button_settings" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="@string/settings"
-            android:fontFamily="@font/ys_display_regular"
-            android:textFontWeight="500"
-            android:textSize="@dimen/text_size_22sp"
-            android:textColor="@color/toolbar_color"/>
-    </com.google.android.material.appbar.MaterialToolbar>
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/themeSwitcher"
-        style="@style/SettingsBtn"
-        tools:ignore="UseSwitchCompatOrMaterialXml"
-        android:layout_gravity="start"
-        app:thumbTint="@color/switch_tint_color"
-        app:trackTint="@color/switch_track_color"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_dark_mode"
+        style="@style/SecondaryButtonsAndText"
         android:layout_height="wrap_content"
-        android:text="@string/dark_theme" />
+        android:checked="false"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/dp8"
+        android:text="@string/dark_mod"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
-        android:id="@+id/button_sharing"
-        style="@style/SettingsBtn"
-        android:text="@string/share"
-        app:icon="@drawable/share" />
+        android:id="@+id/button_settings_share"
+        style="@style/SecondaryButtonsAndText"
+        android:layout_height="wrap_content"
+        android:text="@string/share_the_app"
+        app:icon="@drawable/ic_btn_share"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
-        android:id="@+id/button_support"
-        style="@style/SettingsBtn"
-        android:text="@string/support"
-        app:icon="@drawable/support" />
+        android:id="@+id/button_settings_write_to_supp"
+        style="@style/SecondaryButtonsAndText"
+        android:layout_height="wrap_content"
+        android:text="@string/write_to_support"
+        app:icon="@drawable/ic_btn_support"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
-        android:id="@+id/button_user_agreement"
-        style="@style/SettingsBtn"
+        android:id="@+id/button_settings_user_agreement"
+        style="@style/SecondaryButtonsAndText"
+        android:layout_height="wrap_content"
         android:text="@string/user_agreement"
-        app:icon="@drawable/arrow_forward" />
+        app:icon="@drawable/ic_btn_arrow_forward"
+        tools:ignore="VisualLintButtonSize" />
+
 </LinearLayout>

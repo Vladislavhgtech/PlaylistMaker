@@ -1,197 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/search"
+    style="@style/BackMenuLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColorSettings"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_16dp"
-    android:paddingRight="@dimen/padding_16dp"
-    android:paddingBottom="@dimen/padding_28dp">
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/search_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_marginBottom="0dp"
-        app:navigationIcon="@drawable/back_arrow"
-        app:navigationIconTint="@color/toolbar_color">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:fontFamily="@font/ys_display_regular"
-            android:gravity="center_vertical"
-            android:text="@string/search"
-            android:textColor="@color/toolbar_color"
-            android:textFontWeight="500"
-            android:textSize="@dimen/text_size_22sp" />
-    </com.google.android.material.appbar.MaterialToolbar>
-
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:layout_marginTop="0dp"
-        android:importantForAccessibility="yes"
-        android:paddingHorizontal="@dimen/padding_16dp">
-
-        <EditText
-            android:id="@+id/input_search_form"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_gravity="center"
-            android:autofillHints="search"
-            android:background="@drawable/rounded_edit_text"
-            android:cursorVisible="true"
-            android:drawableStart="@drawable/search"
-            android:drawablePadding="@dimen/padding_8dp"
-            android:drawableTint="@color/search_form_text_hint_color"
-            android:hint="@string/search"
-            android:textColorHint="@color/search_form_text_hint_color"
-
-            android:imeOptions="actionDone"
-            android:inputType="text|textCapSentences|textAutoCorrect"
-            android:maxLength="255"
-            android:padding="@dimen/padding_8dp"
-            android:paddingStart="@dimen/padding_12dp"
-            android:paddingEnd="32dp"
-            android:singleLine="true"
-            android:textColor="@color/search_form_text_color"
-            android:textCursorDrawable="@drawable/cursor_color"
-            style="@style/CustomEditText"/>
-
-
-        <ImageView
-            android:id="@+id/button_clear_search_form"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:contentDescription="@string/clear_search_description"
-            android:padding="@dimen/padding_18dp"
-            android:src="@drawable/cross"
-            android:visibility="gone"
-            app:tint="@color/search_form_text_hint_color" />
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/wg_history_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/history_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_color_title"
-            android:layout_marginStart="@dimen/margin_start_16"
-            android:layout_marginBottom="@dimen/margin_bottom_20"
-            android:text="@string/history_title"
-            android:textSize="@dimen/text_size_19"
-            android:lineHeight="@dimen/line_height_22_27"
-            android:gravity="center" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rw_history_list_search"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    >
 
         <Button
-            android:id="@+id/btn_clear_history_search"
-            style="@style/BtnSearchScreenColorStyle"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginTop="@dimen/button_margin_top"
-            android:layout_gravity="center"
-            android:text="@string/history_clear_btn"
-            android:textColor="@color/button_text_color"
-            android:backgroundTint="@color/button_background_color"
-            android:paddingBottom="@dimen/button_padding_bottom"
-            android:paddingStart="@dimen/button_padding_start"
-            android:paddingEnd="@dimen/button_padding_end" />
-    </LinearLayout>
+            android:id="@+id/buttonBack"
+            style="@style/GoBackButtons"
+            android:text="@string/search"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <RelativeLayout
+            android:id="@+id/search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            app:layout_constraintTop_toBottomOf="@id/buttonBack"
+            android:imeOptions="actionDone">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/history_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        tools:listitem="@layout/item_track" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/search_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:imeOptions="actionDone">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="248dp"
-        android:indeterminateTint="@color/yp_blue"/>
+                <RelativeLayout
+                    style="@style/SearchButtons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone">
 
-    <TextView
-        android:id="@+id/placeholderNothingWasFound"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
-        android:drawablePadding="20dp"
-        android:text="@string/nothingWasFound"
-        android:textAlignment="center"
-        android:textColor="@color/treble_clef_color"
-        android:textSize="19sp"
-        android:visibility="gone"
-        app:drawableTopCompat="@drawable/empty_result_image" />
+                    <ImageButton
+                        android:id="@+id/search_icon"
+                        style="@style/SearchIconStyle"
+                        android:layout_width="@dimen/dp16"
+                        android:layout_height="@dimen/dp16"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/dp16"
+                        android:contentDescription="@string/todo"
+                        android:src="@drawable/ic_search" />
 
-    <LinearLayout
-        android:id="@+id/placeholderCommunicationsProblem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="100dp"
-        android:orientation="vertical"
-        android:visibility="gone">
+                    <EditText
+                        android:id="@+id/search_edit_text"
+                        style="@style/SearchButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="0dp"
+                        android:layout_toStartOf="@id/clearButton"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:paddingVertical="0dp"
+                        android:paddingStart="@dimen/dp24"
+                        android:text="" />
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/connection_problem"
-            android:src="@drawable/errors_icon" />
+                    <ImageButton
+                        android:id="@+id/clearButton"
+                        style="@style/SearchIconStyle"
+                        android:layout_width="@dimen/dp16"
+                        android:layout_height="@dimen/dp16"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/dp16"
+                        android:src="@drawable/ic_btn_clear"
+                        android:visibility="gone"
+                        tools:visibility="visible"/>
+
+                </RelativeLayout>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </RelativeLayout>
 
         <TextView
-            style="@style/ErrorTextPlaceholder"
-            android:text="@string/connection_problem" />
+            android:id="@+id/you_were_looking_for"
+            style="@style/ErrorTextBig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp44"
+            android:paddingBottom="@dimen/dp12"
+            android:text="@string/you_were_looking_for"
+            android:textSize="@dimen/text_size_sp19"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/search_layout"
+            tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/errorText"
-            style="@style/ErrorTextPlaceholder"
-            android:text="@string/check_internet_connection" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/track_recycler_view"
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_retry"
-            style="@style/ErrorButtonPlaceholder"
-            android:text="@string/retry_button" />
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp8"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/you_were_looking_for"
+            app:tint="@color/yp_light_gray_and_yp_white"
+            tools:context=".ui.MedialabActivity"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:layout_editor_absoluteX="0dp"
+            tools:listitem="@layout/util_item_track"
+            tools:visibility="visible" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/track_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        tools:listitem="@layout/item_track" />
+        <Button
+            android:id="@+id/kill_the_history"
+            style="@style/ErrorButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp36"
+            android:layout_marginTop="@dimen/dp24"
+            android:layout_marginBottom="@dimen/dp24"
+            android:gravity="center"
+            android:paddingVertical="@dimen/dp6"
+            android:paddingStart="@dimen/dp12"
+            android:paddingEnd="@dimen/dp12"
+            android:text="@string/clear_the_history"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/loading_indicator"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="@dimen/dp44"
+            android:layout_height="@dimen/dp44"
+            android:layout_marginTop="@dimen/dp248"
+            android:indeterminateTint="@color/yp_blue_and_yp_blue"
+            app:layout_constraintEnd_toEndOf="@+id/track_recycler_view"
+            app:layout_constraintStart_toStartOf="@+id/track_recycler_view"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <include
+            android:id="@+id/utilErrorBox"
+            layout="@layout/util_error_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

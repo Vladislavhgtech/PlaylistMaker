@@ -1,50 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_16dp"
-    android:paddingRight="@dimen/padding_16dp"
-    android:paddingBottom="@dimen/padding_28dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/FrontMenuLayout"
+    tools:context=".main.ui.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_14dp"
-        android:fontFamily="@font/ys_display_regular"
+        android:gravity="center_vertical"
+        android:padding="@dimen/dp16"
         android:text="@string/playlist_maker"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_22sp" />
+        android:textColor="@color/yp_white"
+        android:textSize="@dimen/text_size_sp22" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/searchButton"
-        style="@style/MainScreenButtonStyle"
-        android:text="@string/button_search"
-        app:icon="@drawable/search"
-        app:iconSize="@dimen/icon_size_32dp"
-        app:iconGravity="textStart"
-        app:iconTint="@color/buttonTextColor" />
+    <Button
+        android:id="@+id/button_search"
+        style="@style/MainMenuButtons"
+        android:text="@string/search"
+        app:icon="@drawable/ic_search"
+        tools:ignore="VisualLintButtonSize" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/mediaButton"
-        style="@style/MainScreenButtonStyle"
-        android:text="@string/button_library"
-        app:icon="@drawable/media_library"
-        app:iconSize="@dimen/icon_size_32dp"
-        app:iconGravity="textStart"
-        app:iconTint="@color/buttonTextColor" />
+    <Button
+        android:id="@+id/button_media_lib"
+        style="@style/MainMenuButtons"
+        android:text="@string/button_media_lib"
+        app:icon="@drawable/ic_library"
+        tools:ignore="VisualLintButtonSize" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/settingsButton"
-        style="@style/MainScreenButtonStyle"
-        android:text="@string/settings"
-        app:icon="@drawable/settings"
-        app:iconSize="@dimen/icon_size_32dp"
-        app:iconGravity="textStart"
-        app:iconTint="@color/buttonTextColor" />
+    <Button
+        android:id="@+id/button_settings"
+        style="@style/MainMenuButtons"
+        android:text="@string/button_settings"
+        app:icon="@drawable/ic_btn_settings"
+        tools:ignore="VisualLintButtonSize" />
 </LinearLayout>
