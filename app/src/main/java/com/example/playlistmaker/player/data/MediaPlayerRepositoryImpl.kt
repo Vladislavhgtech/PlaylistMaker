@@ -5,14 +5,14 @@ import com.example.playlistmaker.player.domain.MediaPlayerRepository
 import com.example.playlistmaker.player.domain.PlayerState
 import timber.log.Timber
 
-class MediaPlayerRepositoryImpl(url: String) : MediaPlayerRepository {
+class MediaPlayerRepositoryImpl(private var mediaPlayer: MediaPlayer) : MediaPlayerRepository {
 
-    private val mediaPlayer = MediaPlayer()
     private var playerState = PlayerState.INITIAL
 
-    init {
+    override fun setDataURL(url: String) {
+        Timber.d("=== class MediaPlayerRepositoryImpl => setDataURL(url: String) ${url}")
         mediaPlayer.setDataSource(url)
-//            mediaPlayer.setOnCompletionListener { onPlayerCompletion() }
+        mediaPlayer.setOnCompletionListener { onPlayerCompletion() }
     }
 
     override fun getPlayerState(): PlayerState {
@@ -63,11 +63,7 @@ class MediaPlayerRepositoryImpl(url: String) : MediaPlayerRepository {
 
     }
 
-    override fun setOnCompletionListener(onComplete: () -> Unit) {
-        mediaPlayer.setOnCompletionListener {
-            playerState = PlayerState.PAUSED
-            onComplete()
-        }
+    private fun onPlayerCompletion() {
+        playerState = PlayerState.READY
     }
-
 }

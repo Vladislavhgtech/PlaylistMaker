@@ -1,9 +1,7 @@
-package com.example.playlistmakersettings.domain
-
-import com.example.playlistmaker.settings.domain.SettingsInteractor
-import com.example.playlistmaker.settings.domain.SettingsRepository
+package com.example.playlistmaker.settings.domain
 
 class SettingsInteractorImpl(private val settingsRepository: SettingsRepository) :
+
     SettingsInteractor {
 
     override fun loadNightMode(): Boolean {
@@ -12,5 +10,21 @@ class SettingsInteractorImpl(private val settingsRepository: SettingsRepository)
 
     override fun saveNightMode(value: Boolean) {
         settingsRepository.saveNightMode(value)
+    }
+
+    override fun buttonToShareApp() {
+        settingsRepository.buttonToShareApp()
+    }
+
+    override fun buttonToHelp() {
+        settingsRepository.buttonToHelp()
+    }
+
+    override fun buttonToSeeUserAgreement() {
+        settingsRepository.buttonToSeeUserAgreement()
+    }
+
+    override fun applyTheme() {
+        settingsRepository.applyTheme()
     }
 }

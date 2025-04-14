@@ -1,24 +1,12 @@
 package com.example.playlistmaker.settings.ui
 
-import android.app.Application
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.settings.domain.SettingsInteractor
-import com.example.playlistmaker.settings.domain.CommunicationButtonsInteractor
-import timber.log.Timber
 
-class SettingsViewModel(
-    private val settingsInteractor: SettingsInteractor,
-    private val communicationButtonsInteractor: CommunicationButtonsInteractor
-) : ViewModel() {
+class SettingsViewModel(private val settingsInteractor: SettingsInteractor) : ViewModel() {
 
     private val _isNightMode = MutableLiveData(false)
     val isNightMode: LiveData<Boolean> = _isNightMode
@@ -38,38 +26,16 @@ class SettingsViewModel(
             }
         }
     }
-        fun applyTheme() { // функция, применяющая настройки день/ночь на все приложение, передаю в расширение Application()
-            val nightModeEnabled = settingsInteractor.loadNightMode()
-            if (nightModeEnabled) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
 
-        fun shareApp() {
-            communicationButtonsInteractor.buttonToShareApp()
-        }
-
-        fun goToHelp() {
-            communicationButtonsInteractor.buttonToHelp()
-        }
-
-        fun seeUserAgreement() {
-            communicationButtonsInteractor.buttonToSeeUserAgreement()
-        }
-
-        companion object {
-            fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-                initializer {
-                    val application = this[APPLICATION_KEY] as Application
-                    SettingsViewModel(
-                        settingsInteractor = Creator.provideSettingsInteractor(application),
-                        communicationButtonsInteractor = Creator.provideCommunicationButtonsInteractor(
-                            application
-                        )
-                    )
-                }
-            }
-        }
+    fun shareApp() {
+        settingsInteractor.buttonToShareApp()
     }
+
+    fun goToHelp() {
+        settingsInteractor.buttonToHelp()
+    }
+
+    fun seeUserAgreement() {
+        settingsInteractor.buttonToSeeUserAgreement()
+    }
+}

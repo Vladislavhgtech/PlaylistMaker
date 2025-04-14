@@ -2,8 +2,10 @@ package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayBinding
@@ -16,15 +18,13 @@ import com.example.playlistmaker.utils.bindGoBackButton
 import com.example.playlistmaker.utils.setDebouncedClickListener
 import com.example.playlistmaker.utils.startLoadingIndicator
 import com.example.playlistmaker.utils.stopLoadingIndicator
-import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Locale
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayBinding
     private lateinit var track: Track
-    private lateinit var viewModel: PlayViewModel
+    private val viewModel: PlayViewModel by viewModel()
     private var isAddedToPlaylist: Boolean = false
     private var isLiked: Boolean = false
 
@@ -35,16 +35,13 @@ class PlayActivity : AppCompatActivity() {
         startLoadingIndicator()
         track =
             (intent?.getSerializableExtra(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track)!!
-        viewModel = ViewModelProvider(
-            this,
-            PlayViewModel.getViewModelFactory(track.previewUrl)
-        )[PlayViewModel::class.java]
+        track.previewUrl?.let { viewModel.setDataURL(it) }
         viewModel.screenState.observe(this@PlayActivity) { screenState ->
             setupScreenState(screenState)
         }
-            setTrackData(track)
-            setupBtnsAndClickListeners()
-        }
+        setTrackData(track)
+        setupBtnsAndClickListeners()
+    }
 
 
     private fun setTrackData(track: Track) {
@@ -106,8 +103,9 @@ class PlayActivity : AppCompatActivity() {
 
             PlayerState.READY -> {
                 Timber.d("=== PlayerState.READY")
+                binding.btnPlay.setImageResource(R.drawable.ic_btn_play)
                 binding.trackTime.text =
-                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(playbackPosition)
+                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(0)
             }
 
             PlayerState.PLAYING -> {
@@ -135,7 +133,6 @@ class PlayActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun setupAddToPlaylistButton() {
         binding.btnAddToPlaylist.setDebouncedClickListener {
@@ -177,5 +174,4 @@ class PlayActivity : AppCompatActivity() {
         super.onPause()
         viewModel.onActivityPaused()
     }
-
 }
