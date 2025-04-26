@@ -17,8 +17,9 @@
             android:name=".search.ui.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".mediateka.MedialabActivity"
-            android:exported="false" />
+            android:name=".medialibrary.MLActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".settings.ui.SettingsActivity"
             android:exported="false" />
