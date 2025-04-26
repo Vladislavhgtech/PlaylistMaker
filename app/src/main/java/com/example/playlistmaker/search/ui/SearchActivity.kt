@@ -12,8 +12,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
@@ -28,6 +28,7 @@ import com.example.playlistmaker.utils.AppPreferencesKeys
 import com.example.playlistmaker.utils.DebounceExtension
 import com.example.playlistmaker.utils.startLoadingIndicator
 import com.example.playlistmaker.utils.stopLoadingIndicator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -37,19 +38,17 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var queryInput: EditText
     private lateinit var clearButton: ImageButton
     private lateinit var unitedRecyclerView: RecyclerView
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
     private val trackListFromAPI = ArrayList<Track>()
     private val historyTrackList = ArrayList<Track>()
     private lateinit var adapterForHistoryTracks: AdapterForHistoryTracks
     private lateinit var adapterForAPITracks: AdapterForAPITracks
     private val layoutManager = LinearLayoutManager(this)
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.plant(Timber.DebugTree()) // для логирования
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory()
-        )[SearchViewModel::class.java]
         initViews()
         setupAdapterForHistoryTracks()
         setupAdapterForAPITracks()
@@ -95,7 +94,7 @@ class SearchActivity : AppCompatActivity() {
         adapterForHistoryTracks.searchHistoryTracks = historyTrackList
     }
 
-
+    //********************************** устанавливаем наблюдатель за изменениями в состоянии экрана
 
     private fun setupObserver() {
         viewModel.screenState.observe(this@SearchActivity) { screenState ->
@@ -116,17 +115,11 @@ class SearchActivity : AppCompatActivity() {
 
                 is SearchScreenState.ShowHistory -> {
                     Timber.d("=== SearchScreenState.ShowHistory")
-                    if (screenState.historyList.isNotEmpty()) {
-                        showTracksFromHistory(screenState.historyList)
-                        unitedRecyclerView.isVisible = true
-                        binding.killTheHistory.isVisible = true
-                    } else {
-                        unitedRecyclerView.isVisible = false
-                        binding.killTheHistory.isVisible = false
-                    }
+                    showTracksFromHistory(screenState.historyList)
+                    unitedRecyclerView.isVisible = true
+                    binding.killTheHistory.isVisible = historyTrackList.isNotEmpty()
                     stopLoadingIndicator()
                 }
-
 
                 is SearchScreenState.SearchAPI -> {
                     Timber.d("=== SearchScreenState.SearchAPI")
@@ -187,7 +180,7 @@ class SearchActivity : AppCompatActivity() {
             adapterForAPITracks.notifyDataSetChanged()
             unitedRecyclerView.adapter = adapterForAPITracks
         } else {
-                viewModel.setNoResultsState()
+            viewModel.setNoResultsState()
         }
     }
 
@@ -245,7 +238,7 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchText = queryInput.text.toString().trim()
                 if (searchText.isNotEmpty()) {
-                    startToSearchTrackRightAway() // ищем песню сразу
+                    startToSearchTrackRightAway()
                 }
                 hideKeyboard()
                 true
@@ -254,7 +247,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun showToUserHistoryOfOldTracks() {
         viewModel.showHistoryFromViewModel()
@@ -265,15 +257,13 @@ class SearchActivity : AppCompatActivity() {
             viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), false)
         }
 
-    private fun startToSearchTrackWithDebounce() { // задержка для поиска во время ввода
+    private fun startToSearchTrackWithDebounce() {
         twoSecondDebounceSearch.debounce()
     }
 
-    private fun startToSearchTrackRightAway() { // ищем трек сразу
+    private fun startToSearchTrackRightAway() {
         viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), false)
     }
-
-
 
     fun solvingThisProblemWith(problemTipo: String, sendRequestForDoReserch: () -> Unit) {
         val utilErrorBox = findViewById<LinearLayout>(R.id.utilErrorBox)
@@ -287,7 +277,7 @@ class SearchActivity : AppCompatActivity() {
                 errorTextWeb.text = resources.getString(R.string.error_text_web)
                 retryButton.visibility = View.VISIBLE
                 retryButton.setDebouncedClickListener {
-                    sendRequestForDoReserch() // тут отправляем на повторный поиск
+                    sendRequestForDoReserch()
                     utilErrorBox.visibility = View.GONE
                 }
             }

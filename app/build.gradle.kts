@@ -63,6 +63,7 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("org.jetbrains.kotlin:kotlin-parcelize-runtime:1.8.0")
+    implementation("io.insert-koin:koin-android:3.3.0")
 
 
 

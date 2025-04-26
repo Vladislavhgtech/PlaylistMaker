@@ -1,15 +1,9 @@
 package com.example.playlistmaker.search.ui
 
-import android.app.Application
 import androidx.core.util.Consumer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.domain.models.TracksResponse
@@ -51,7 +45,6 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
 
     fun saveToHistory(track: Track) {
         tracksInteractor.saveToHistory(track)
-//        showActiveList()
     }
 
     fun saveToHistoryAndRefresh(track: Track) {
@@ -59,14 +52,14 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
         showActiveList()
     }
 
-    fun showActiveList() { // метод для того, чтобы после клика по списку сохраненных треков список пересобирался перенося трек на 0 место
+    fun showActiveList() {
         val activeList = tracksInteractor.getActiveList()
         if (_screenState.value !is SearchScreenState.ShowHistory || (activeList.isNotEmpty() && activeList != historyTrackList)) {
             _screenState.value = SearchScreenState.ShowHistory(activeList)
         }
     }
 
-     override fun onCleared() {
+    override fun onCleared() {
         super.onCleared()
     }
 
@@ -77,19 +70,4 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
     fun setNoResultsState() {
         _screenState.value = SearchScreenState.NoResults
     }
-
-    companion object {
-        var isLoadingPlayer = false
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = this[APPLICATION_KEY] as Application
-                SearchViewModel(
-                    tracksInteractor = Creator.provideTracksInteractor(application)
-                )
-            }
-        }
-    }
-
 }
-
