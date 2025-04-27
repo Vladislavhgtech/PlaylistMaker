@@ -15,7 +15,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MLPlaylistsFragment : Fragment() {
 
     private val viewModel: MLPlaylistsViewModel by viewModel()
-    private lateinit var binding: FragmentPlaylistsBinding
+    private var _binding: FragmentPlaylistsBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         fun newInstance() = MLPlaylistsFragment()
@@ -25,8 +26,8 @@ class MLPlaylistsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
-        return binding.root
+        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false) // Инициализируем _binding
+        return _binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,8 +41,6 @@ class MLPlaylistsFragment : Fragment() {
             when (screenState) {
                 is MLPlaylistsScreenState.Ready -> {
                     ifFragmentErrorShowPlug(requireContext(), PLAYLISTS_EMPTY)
-//                    val favoritesList = screenState.historyList
-//                    binding.testBlock2.text = favoritesList.joinToString("\n")
                 }
                 MLPlaylistsScreenState.Error -> {
                     ifFragmentErrorShowPlug(requireContext(), INTERNET_EMPTY)
@@ -51,5 +50,10 @@ class MLPlaylistsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
