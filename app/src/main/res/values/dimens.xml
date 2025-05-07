@@ -10,6 +10,7 @@
     <dimen name="button_weight">1</dimen>
     <dimen name="z">0dp</dimen>
     <dimen name="dp1">1dp</dimen>
+    <dimen name="dp2">2dp</dimen>
     <dimen name="dp4">4dp</dimen>
     <dimen name="dp5">5dp</dimen>
     <dimen name="dp6">6dp</dimen>
@@ -26,14 +27,9 @@
     <dimen name="dp91">91dp</dimen>
 
     <dimen name="dp100">100dp</dimen>
+    <dimen name="dp120">120dp</dimen>
     <dimen name="dp248">248dp</dimen>
     <dimen name="maxEms">50</dimen>
     <dimen name="dp108">108dp</dimen>
-    <dimen name="dp120">120dp</dimen>
-    <dimen name="dp160">160dp</dimen>
 
 </resources>
-
-   
-
-

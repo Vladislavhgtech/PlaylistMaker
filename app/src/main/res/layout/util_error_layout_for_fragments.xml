@@ -5,10 +5,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp160"
-        android:layout_weight="0"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp60" />
 
         <Button
             android:id="@+id/retry_button"
@@ -16,41 +19,34 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp36"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp16"
-            android:layout_marginBottom="@dimen/dp24"
-            android:paddingStart="@dimen/dp16"
-            android:paddingTop="@dimen/dp8"
-            android:paddingEnd="@dimen/dp16"
-            android:paddingBottom="@dimen/dp8"
             android:text="@string/new_play_list" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp24" />
 
+        <ImageView
+            android:id="@+id/error_icon"
+            style="@style/ErrorTransparent"
+            android:layout_width="@dimen/dp120"
+            android:layout_height="@dimen/dp120"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_error_notfound" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp12" />
+
+        <TextView
+            android:id="@+id/error_text_web"
+            style="@style/ErrorTextBig"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/any_mistake"
+            android:textSize="@dimen/text_size_sp16" />
+
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/error_icon"
-        style="@style/ErrorTransparent"
-        android:layout_width="@dimen/dp120"
-        android:layout_height="@dimen/dp120"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_error_notfound" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp12" />
-
-    <TextView
-        android:id="@+id/error_text_web"
-        style="@style/ErrorTextBig"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:text="@string/any_mistake"
-        android:textSize="@dimen/text_size_sp16" />
-
 </LinearLayout>
-
