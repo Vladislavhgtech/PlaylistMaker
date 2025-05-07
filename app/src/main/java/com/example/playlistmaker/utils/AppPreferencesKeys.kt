@@ -5,8 +5,7 @@ internal object AppPreferencesKeys {
 
     const val PREFS_NAME = "MyPrefs"
     const val KEY_NIGHT_MODE = "nightMode"
-
-const val SEARCH_HISTORY = "search_history"
+    const val SEARCH_HISTORY = "search_history"
     const val AN_INSTANCE_OF_THE_TRACK_CLASS = "an instance of the Track class"
 
 
@@ -17,8 +16,12 @@ const val SEARCH_HISTORY = "search_history"
     const val ONE_SECOND = 1000L
     const val iTunesSearchUrl = "https://itunes.apple.com"
 
-    const val INTERNET = "problems_with_internet"
-    const val RESULTS = "problems_with_results"
+
+    const val INTERNET_EMPTY = "problems_with_internet"
+    const val RESULTS_EMPTY = "no_results"
+    const val FAVORITES_EMPTY = "favorites_empty"
+    const val PLAYLISTS_EMPTY = "playlists_empty"
+    const val LOADING = "loading"
 }
 
 

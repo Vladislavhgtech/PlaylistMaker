@@ -12,7 +12,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +25,7 @@ import com.example.playlistmaker.utils.bindGoBackButton
 import com.example.playlistmaker.utils.setDebouncedClickListener
 import com.example.playlistmaker.utils.AppPreferencesKeys
 import com.example.playlistmaker.utils.DebounceExtension
+import com.example.playlistmaker.utils.ErrorUtils.ifActivityErrorShowPlug
 import com.example.playlistmaker.utils.startLoadingIndicator
 import com.example.playlistmaker.utils.stopLoadingIndicator
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -47,7 +47,7 @@ class SearchActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Timber.plant(Timber.DebugTree()) // для логирования
+        Timber.plant(Timber.DebugTree())
         super.onCreate(savedInstanceState)
         initViews()
         setupAdapterForHistoryTracks()
@@ -60,7 +60,7 @@ class SearchActivity : AppCompatActivity() {
         bindGoBackButton()
     }
 
-    private fun initViews() { // вызовы вьюх
+    private fun initViews() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         utilErrorBinding = UtilErrorLayoutBinding.inflate(layoutInflater)
@@ -72,7 +72,7 @@ class SearchActivity : AppCompatActivity() {
         unitedRecyclerView.layoutManager = layoutManager
     }
 
-    // устанавливаем адаптер на треки из АйТюнс
+
     private fun setupAdapterForAPITracks() {
         adapterForAPITracks = AdapterForAPITracks {
             viewModel.saveToHistory(it)
@@ -83,7 +83,7 @@ class SearchActivity : AppCompatActivity() {
         adapterForAPITracks.tracks = trackListFromAPI
     }
 
-    // устанавливаю адаптер на треки из истории сохранений
+
     private fun setupAdapterForHistoryTracks() {
         adapterForHistoryTracks = AdapterForHistoryTracks {
             viewModel.saveToHistoryAndRefresh(it)
@@ -94,7 +94,6 @@ class SearchActivity : AppCompatActivity() {
         adapterForHistoryTracks.searchHistoryTracks = historyTrackList
     }
 
-    //********************************** устанавливаем наблюдатель за изменениями в состоянии экрана
 
     private fun setupObserver() {
         viewModel.screenState.observe(this@SearchActivity) { screenState ->
@@ -103,6 +102,7 @@ class SearchActivity : AppCompatActivity() {
                     Timber.d("=== SearchScreenState.InitialState")
                     unitedRecyclerView.isVisible = false
                     binding.killTheHistory.isVisible = false
+                    binding.youWereLookingFor.isVisible = false
                 }
 
                 SearchScreenState.Loading -> {
@@ -111,6 +111,7 @@ class SearchActivity : AppCompatActivity() {
                     startLoadingIndicator()
                     unitedRecyclerView.isVisible = false
                     binding.killTheHistory.isVisible = false
+                    binding.youWereLookingFor.isVisible = false
                 }
 
                 is SearchScreenState.ShowHistory -> {
@@ -118,6 +119,7 @@ class SearchActivity : AppCompatActivity() {
                     showTracksFromHistory(screenState.historyList)
                     unitedRecyclerView.isVisible = true
                     binding.killTheHistory.isVisible = historyTrackList.isNotEmpty()
+                    binding.youWereLookingFor.isVisible = historyTrackList.isNotEmpty()
                     stopLoadingIndicator()
                 }
 
@@ -126,6 +128,7 @@ class SearchActivity : AppCompatActivity() {
                     showSearchFromAPI(screenState.searchAPIList)
                     unitedRecyclerView.isVisible = true
                     binding.killTheHistory.isVisible = false
+                    binding.youWereLookingFor.isVisible = false
                     stopLoadingIndicator()
                 }
 
@@ -133,7 +136,8 @@ class SearchActivity : AppCompatActivity() {
                     Timber.e("=== SearchScreenState.NoResults")
                     unitedRecyclerView.isVisible = false
                     binding.killTheHistory.isVisible = false
-                    solvingThisProblemWith(AppPreferencesKeys.RESULTS) {}
+                    binding.youWereLookingFor.isVisible = false
+                    ifActivityErrorShowPlug(AppPreferencesKeys.RESULTS_EMPTY) {}
                     stopLoadingIndicator()
                 }
 
@@ -141,7 +145,8 @@ class SearchActivity : AppCompatActivity() {
                     Timber.e("=== SearchScreenState.Error")
                     unitedRecyclerView.isVisible = false
                     binding.killTheHistory.isVisible = false
-                    solvingThisProblemWith(AppPreferencesKeys.INTERNET) {
+                    binding.youWereLookingFor.isVisible = false
+                    ifActivityErrorShowPlug(AppPreferencesKeys.INTERNET_EMPTY) {
                         viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), true)
                     }
                     stopLoadingIndicator()
@@ -216,7 +221,7 @@ class SearchActivity : AppCompatActivity() {
                 val searchText = queryInput.text.toString().trim()
                 clearButton.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.GONE
                 Timber.d("=== class SearchActivity  => (viewModel.searchDebounce( ${searchText} ))")
-                if (hasFocus && searchText.isEmpty()) {  // обработка ввода без нажатий
+                if (hasFocus && searchText.isEmpty()) {
                     showToUserHistoryOfOldTracks()
                 } else {
                     startToSearchTrackWithDebounce()
@@ -248,7 +253,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showToUserHistoryOfOldTracks() {
+   private fun showToUserHistoryOfOldTracks() {
         viewModel.showHistoryFromViewModel()
     }
 
@@ -263,39 +268,5 @@ class SearchActivity : AppCompatActivity() {
 
     private fun startToSearchTrackRightAway() {
         viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), false)
-    }
-
-    fun solvingThisProblemWith(problemTipo: String, sendRequestForDoReserch: () -> Unit) {
-        val utilErrorBox = findViewById<LinearLayout>(R.id.utilErrorBox)
-        val errorIcon = findViewById<ImageView>(R.id.error_icon)
-        val errorTextWeb = findViewById<TextView>(R.id.error_text_web)
-        val retryButton = findViewById<Button>(R.id.retry_button)
-
-        when (problemTipo) {
-            AppPreferencesKeys.INTERNET -> {
-                errorIcon.setImageResource(R.drawable.ic_error_internet)
-                errorTextWeb.text = resources.getString(R.string.error_text_web)
-                retryButton.visibility = View.VISIBLE
-                retryButton.setDebouncedClickListener {
-                    sendRequestForDoReserch()
-                    utilErrorBox.visibility = View.GONE
-                }
-            }
-
-            AppPreferencesKeys.RESULTS -> {
-                errorIcon.setImageResource(R.drawable.ic_error_notfound)
-                errorTextWeb.text = resources.getString(R.string.nothing_was_found)
-                retryButton.visibility = View.GONE
-            }
-
-            else -> {
-                retryButton.visibility = View.GONE
-            }
-        }
-
-        utilErrorBox.visibility = View.VISIBLE
-        utilErrorBox.setDebouncedClickListener {
-            utilErrorBox.visibility = View.GONE
-        }
     }
 }

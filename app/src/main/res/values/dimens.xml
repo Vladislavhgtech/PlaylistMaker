@@ -29,6 +29,9 @@
     <dimen name="dp248">248dp</dimen>
     <dimen name="maxEms">50</dimen>
     <dimen name="dp108">108dp</dimen>
+    <dimen name="dp120">120dp</dimen>
+    <dimen name="dp160">160dp</dimen>
+
 </resources>
 
    
