@@ -1,48 +1,63 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.fragment.app.Fragment
 
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityPlayBinding
+import com.example.playlistmaker.databinding.FragmentPlayBinding
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.utils.ArtworkUrlLoader
 import com.example.playlistmaker.player.domain.PlayerState
 import com.example.playlistmaker.utils.AppPreferencesKeys
 import com.example.playlistmaker.utils.DebounceExtension
-import com.example.playlistmaker.utils.bindGoBackButton
 import com.example.playlistmaker.utils.setDebouncedClickListener
-import com.example.playlistmaker.utils.startLoadingIndicator
 import com.example.playlistmaker.utils.stopLoadingIndicator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlayActivity : AppCompatActivity() {
+class PlayFragment : Fragment() {
 
-    private lateinit var binding: ActivityPlayBinding
+    private var _binding: FragmentPlayBinding? = null
+    private val binding get() = _binding!!
     private lateinit var track: Track
     private val viewModel: PlayViewModel by viewModel()
     private var isAddedToPlaylist: Boolean = false
     private var isLiked: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPlayBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        startLoadingIndicator()
-        track =
-            (intent?.getSerializableExtra(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track)!!
-        track.previewUrl?.let { viewModel.setDataURL(it) }
-        viewModel.screenState.observe(this@PlayActivity) { screenState ->
-            setupScreenState(screenState)
-        }
-        setTrackData(track)
-        setupBtnsAndClickListeners()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPlayBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val trackFromArguments = arguments?.getSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track
+
+        if (trackFromArguments != null) {
+            track = trackFromArguments
+            track.previewUrl?.let { viewModel.setDataURL(it) }
+            viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
+                setupScreenState(screenState)
+            }
+            setTrackData(track)
+            setupBtnsAndClickListeners()
+        } else {
+            Timber.d("Track где-то потерялся")
+        }
+
+        binding.buttonBack.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+    }
 
     private fun setTrackData(track: Track) {
         with(binding) {
@@ -62,7 +77,6 @@ class PlayActivity : AppCompatActivity() {
     }
 
     private fun setupBtnsAndClickListeners() {
-        bindGoBackButton()
         binding.btnPlay.setDebouncedClickListener { viewModel.playBtnClick() }
         setupLikeButton()
         setupAddToPlaylistButton()
@@ -170,8 +184,8 @@ class PlayActivity : AppCompatActivity() {
         snackbar.show()
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.onActivityPaused()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

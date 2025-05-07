@@ -9,14 +9,13 @@ import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.utils.AppPreferencesKeys.INTERNET_EMPTY
 import com.example.playlistmaker.utils.AppPreferencesKeys.LOADING
 import com.example.playlistmaker.utils.AppPreferencesKeys.PLAYLISTS_EMPTY
-import com.example.playlistmaker.utils.ErrorUtils.ifFragmentErrorShowPlug
+import com.example.playlistmaker.utils.ErrorUtils.ifMedialibraryErrorShowPlug
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MLPlaylistsFragment : Fragment() {
 
     private val viewModel: MLPlaylistsViewModel by viewModel()
-    private var _binding: FragmentPlaylistsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentPlaylistsBinding
 
     companion object {
         fun newInstance() = MLPlaylistsFragment()
@@ -26,8 +25,8 @@ class MLPlaylistsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false) // Инициализируем _binding
-        return _binding?.root
+        binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,20 +39,15 @@ class MLPlaylistsFragment : Fragment() {
         viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is MLPlaylistsScreenState.Ready -> {
-                    ifFragmentErrorShowPlug(requireContext(), PLAYLISTS_EMPTY)
+                    ifMedialibraryErrorShowPlug(requireContext(), PLAYLISTS_EMPTY)
                 }
                 MLPlaylistsScreenState.Error -> {
-                    ifFragmentErrorShowPlug(requireContext(), INTERNET_EMPTY)
+                    ifMedialibraryErrorShowPlug(requireContext(), INTERNET_EMPTY)
                 }
                 MLPlaylistsScreenState.Loading -> {
-                    ifFragmentErrorShowPlug(requireContext(), LOADING)
+                    ifMedialibraryErrorShowPlug(requireContext(), LOADING)
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
