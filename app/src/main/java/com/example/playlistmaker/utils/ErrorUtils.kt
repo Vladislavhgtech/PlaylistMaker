@@ -28,7 +28,7 @@ object ErrorUtils {
                 errorTextWeb?.text = resources.getString(R.string.error_text_web)
                 retryButton?.visibility = View.VISIBLE
                 retryButton?.setDebouncedClickListener {
-                    sendRequestForDoReserch()
+                    sendRequestForDoReserch() // тут отправляем на повторный поиск
                     utilErrorBox?.visibility = View.GONE
                 }
                 utilErrorBox?.setDebouncedClickListener {

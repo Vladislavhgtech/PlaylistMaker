@@ -36,7 +36,7 @@ class SettingsRepositoryImpl(private val context: Context, private val sharedPre
         intent.type = "text/plain"
         intent.putExtra(
             Intent.EXTRA_TEXT,
-            context.getString(R.string.share_app_text) + appId
+            context.getString(R.string.share_app_text) + appId // идентификатор приложения
         )
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val chooserIntent = Intent.createChooser(intent, context.getString(R.string.share_app_title))

@@ -4,5 +4,5 @@ import com.example.playlistmaker.search.data.dto.Response
 import com.example.playlistmaker.search.data.dto.SearchRequest
 
 interface NetworkClient {
-    fun doRequest(request: SearchRequest): Response
+    suspend fun doRequest(request: SearchRequest): Response
 }

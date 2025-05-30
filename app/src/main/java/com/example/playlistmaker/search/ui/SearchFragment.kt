@@ -77,7 +77,6 @@ class SearchFragment : Fragment() {
         unitedRecyclerView = binding.trackRecyclerView
     }
 
-
     private fun setupAdapterForAPITracks() {
         adapterForAPITracks = AdapterForAPITracks {
             viewModel.saveToHistory(it)
@@ -94,7 +93,6 @@ class SearchFragment : Fragment() {
         }
         adapterForAPITracks.tracks = trackListFromAPI
     }
-
 
     private fun setupAdapterForHistoryTracks() {
         adapterForHistoryTracks = AdapterForHistoryTracks {
@@ -186,7 +184,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    //****** обработка функций на показ истории сохраненных треков, удаление истории, поиск, очистка
 
     @SuppressLint("NotifyDataSetChanged") // Историй показывают, красивое
     private fun showTracksFromHistory(historyList: List<Track>) {
@@ -234,7 +231,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    //************************************************************** обработка ввода в поле поиска
 
     private fun queryTextChangedListener() {
         queryInput.addTextChangedListener(object : TextWatcher {
@@ -265,14 +261,12 @@ class SearchFragment : Fragment() {
             override fun afterTextChanged(editable: Editable?) {
             }
         })
-        // Фокус + ЖЦ вход в приложение queryInput пуст
         queryInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && queryInput.text.isEmpty()) {
                 showToUserHistoryOfOldTracks()
             } else if (queryInput.text.isNotEmpty()) {
             }
         }
-        // обработка ввода с нажатием DONE
         queryInput.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchText = queryInput.text.toString().trim()
@@ -287,21 +281,20 @@ class SearchFragment : Fragment() {
         }
     }
 
-    //************************************** отправляем реакции на клик, ввод, и тп. во viewModel
     private fun showToUserHistoryOfOldTracks() {
         viewModel.showHistoryFromViewModel()
     }
 
-    private val twoSecondDebounceSearch =  // обработка задержки в 2 сек
+    private val twoSecondDebounceSearch =
         DebounceExtension(AppPreferencesKeys.TWO_SECONDS) {
             viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), false)
         }
 
-    private fun startToSearchTrackWithDebounce() { // задержка для поиска во время ввода
+    private fun startToSearchTrackWithDebounce() {
         twoSecondDebounceSearch.debounce()
     }
 
-    private fun startToSearchTrackRightAway() { // ищем трек сразу
+    private fun startToSearchTrackRightAway() {
         viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), false)
     }
 }
