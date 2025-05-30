@@ -10,7 +10,7 @@ import com.example.playlistmaker.utils.AppPreferencesKeys.FAVORITES_EMPTY
 import com.example.playlistmaker.utils.AppPreferencesKeys.INTERNET_EMPTY
 import com.example.playlistmaker.utils.AppPreferencesKeys.LOADING
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.example.playlistmaker.utils.ErrorUtils.ifFragmentErrorShowPlug
+import com.example.playlistmaker.utils.ErrorUtils.ifMedialibraryErrorShowPlug
 
 class MLFavoritesFragment : Fragment() {
 
@@ -32,20 +32,20 @@ class MLFavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObserver()
-        viewModel.loadFromHistory()
+        viewModel.loadFromHistory() // значение сохраненных в память треков
     }
 
     private fun setupObserver() {
         viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is MLFavoritesScreenState.Ready -> {
-                    ifFragmentErrorShowPlug(requireContext(), FAVORITES_EMPTY)
+                    ifMedialibraryErrorShowPlug(requireContext(), FAVORITES_EMPTY)
                 }
                 MLFavoritesScreenState.Error -> {
-                    ifFragmentErrorShowPlug(requireContext(), INTERNET_EMPTY)
+                    ifMedialibraryErrorShowPlug(requireContext(), INTERNET_EMPTY)
                 }
                 MLFavoritesScreenState.Loading -> {
-                    ifFragmentErrorShowPlug(requireContext(), LOADING)
+                    ifMedialibraryErrorShowPlug(requireContext(), LOADING)
                 }
             }
         }
