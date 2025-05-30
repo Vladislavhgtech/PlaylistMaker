@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
 
 
+
 fun Fragment.toast(text: String) {
     Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
 }
