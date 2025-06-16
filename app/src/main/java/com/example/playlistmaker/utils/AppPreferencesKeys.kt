@@ -13,6 +13,7 @@ internal object AppPreferencesKeys {
     const val CLICK_DEBOUNCE_DELAY = 500L
     const val TWO_SECONDS = 2000L
     const val ONE_SECOND = 1000L
+    const val THREE_HUNDRED_MILLISECONDS = 300L
     const val iTunesSearchUrl = "https://itunes.apple.com"
 
     const val INTERNET_EMPTY = "problems_with_internet"

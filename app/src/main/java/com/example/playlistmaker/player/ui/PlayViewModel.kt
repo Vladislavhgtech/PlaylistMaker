@@ -16,7 +16,7 @@ class PlayViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) : 
 
     private fun playerPlay() {
         mediaPlayerInteractor.play()
-        DebounceExtension(AppPreferencesKeys.CLICK_DEBOUNCE_DELAY, ::timerTask).debounce()
+        DebounceExtension(AppPreferencesKeys.THREE_HUNDRED_MILLISECONDS, ::timerTask).debounce()
     }
 
     private fun playerPause() {
@@ -49,7 +49,7 @@ class PlayViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) : 
         mediaPlayerInteractor.stop()
     }
 
-    private fun timerTask() {
+    private fun timerTask() { // добавил проверку для исправления вылета перехода из плеера НАЗАД в список песен
         val playerState = mediaPlayerInteractor.getState()
         if (playerState != PlayerState.INITIAL && playerState != PlayerState.KILL && playerState != PlayerState.ERROR) {
             updatePlayerInfo()

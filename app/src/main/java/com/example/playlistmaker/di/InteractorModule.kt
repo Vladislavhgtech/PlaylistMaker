@@ -22,4 +22,3 @@ val interactorModule = module {
         TracksInteractorImpl(get())
     }
 }
-
