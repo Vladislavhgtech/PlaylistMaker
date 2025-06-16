@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import android.util.Log
 
 class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewModel() {
 
@@ -22,11 +22,11 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
     fun showHistoryFromViewModel() {
         val searchHistory = tracksInteractor.loadFromHistory()
         _screenState.value = SearchScreenState.ShowHistory(searchHistory)
-        Timber.d("=== class SearchViewModel => loadAndSetSearchHistory => fun searchRequest(${searchHistory})")
+        Log.d("=== LOG ===", "===  class SearchViewModel => loadAndSetSearchHistory => fun searchRequest(${searchHistory})")
     }
 
     fun searchRequestFromViewModel(searchText: String, rebootingFromError: Boolean) {
-        Timber.d("=== class SearchViewModel => fun searchRequestFromViewModel (${searchText})")
+        Log.d("=== LOG ===", "===  class SearchViewModel => fun searchRequestFromViewModel (${searchText})")
         if (!rebootingFromError && oldSearchText == searchText) return
         oldSearchText = searchText
         _screenState.value = SearchScreenState.Loading
@@ -52,7 +52,7 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
         showActiveList()
     }
 
-    fun showActiveList() {
+    fun showActiveList() { // метод для того, чтобы после клика по списку сохраненных треков список пересобирался перенося трек на 0 место
         val activeList = tracksInteractor.getActiveList()
         if (_screenState.value !is SearchScreenState.ShowHistory || (activeList.isNotEmpty() && activeList != historyTrackList)) {
             _screenState.value = SearchScreenState.ShowHistory(activeList)
