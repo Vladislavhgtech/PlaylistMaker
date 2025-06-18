@@ -63,7 +63,6 @@ class SearchFragment : Fragment() {
         clearButton()
         queryTextChangedListener()
         killTheHistory()
-        viewModel.setInitialState()
     }
 
     override fun onDestroyView() {

@@ -18,15 +18,15 @@ class PlayViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor, pr
 
     private val _screenState = MutableLiveData<ScreenState>(ScreenState.Initial)
     val screenState: LiveData<ScreenState> = _screenState
+    private var isFavoriteTrack = false
 
-    private val _isFavoriteTrack = MutableLiveData(false)
-    val isFavoriteTrack: LiveData<Boolean> = _isFavoriteTrack
     private var trackId = -1
 
     init {
         viewModelScope.launch {
-            favoritesInteractor.getTrackIds().collect{ trackIds ->
-                _isFavoriteTrack.value = trackIds.contains(trackId)
+            favoritesInteractor.getTrackIds().collect { trackIds ->
+                isFavoriteTrack = trackIds.contains(trackId)
+                updatePlayerInfo()
             }
         }
     }
@@ -56,7 +56,11 @@ class PlayViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor, pr
     private fun updatePlayerInfo() {
         val playerState = mediaPlayerInteractor.getState()
         val playbackPosition = mediaPlayerInteractor.getPlaybackPosition()
-        _screenState.value = ScreenState.Content(playerState, playbackPosition)
+        _screenState.value = ScreenState.Content(
+            playerState = playerState,
+            playbackPosition = playbackPosition,
+            isFavoriteTrack = isFavoriteTrack
+        )
     }
 
     fun playBtnClick() {

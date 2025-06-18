@@ -39,6 +39,7 @@ class PlayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<View>(R.id.bottom_navigation_view)?.visibility = View.GONE
         val trackFromArguments = arguments?.getSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track
 
         if (trackFromArguments != null) {
@@ -105,6 +106,14 @@ class PlayFragment : Fragment() {
 
             is ScreenState.Content -> {
                 setupPlayerState(screenState.playerState, screenState.playbackPosition)
+
+                val favoriteRes = if (screenState.isFavoriteTrack) {
+                    R.drawable.ic_btn_like_done
+                } else {
+                    R.drawable.ic_btn_dont_like
+                }
+                binding.btnLike.setImageResource(favoriteRes)
+
             }
         }
     }
@@ -163,10 +172,7 @@ class PlayFragment : Fragment() {
     }
 
     private fun setupLikeButton() {
-        viewModel.isFavoriteTrack.observe(viewLifecycleOwner) { isFavoriteTrack ->
-            if (isFavoriteTrack) binding.btnLike.setImageResource(R.drawable.ic_btn_like_done)
-            else binding.btnLike.setImageResource(R.drawable.ic_btn_dont_like)
-        }
+
         binding.btnLike.setDebouncedClickListener {
             viewModel.upsertFavoriteTrack(track)
             Log.d("=== LOG ===", "=== PlayFragment > setupLikeButton()")
@@ -186,6 +192,7 @@ class PlayFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        requireActivity().findViewById<View>(R.id.bottom_navigation_view)?.visibility = View.VISIBLE
         _binding = null
     }
 }

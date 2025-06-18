@@ -8,7 +8,8 @@ sealed class ScreenState() {
 
     data class Content(
         val playerState: PlayerState = PlayerState.PAUSED,
-        val playbackPosition: Int = 0
+        val playbackPosition: Int = 0,
+        val isFavoriteTrack: Boolean = false
     ): ScreenState()
 
     data class Error(
