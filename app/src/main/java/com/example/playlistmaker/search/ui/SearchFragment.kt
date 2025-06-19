@@ -27,7 +27,7 @@ import com.example.playlistmaker.utils.setDebouncedClickListener
 import com.example.playlistmaker.utils.startLoadingIndicator
 import com.example.playlistmaker.utils.stopLoadingIndicator
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
+import android.util.Log
 
 class SearchFragment : Fragment() {
 
@@ -63,7 +63,6 @@ class SearchFragment : Fragment() {
         clearButton()
         queryTextChangedListener()
         killTheHistory()
-        viewModel.setInitialState()
     }
 
     override fun onDestroyView() {
@@ -93,6 +92,7 @@ class SearchFragment : Fragment() {
         }
         adapterForAPITracks.tracks = trackListFromAPI
     }
+
 
     private fun setupAdapterForHistoryTracks() {
         adapterForHistoryTracks = AdapterForHistoryTracks {
@@ -128,14 +128,14 @@ class SearchFragment : Fragment() {
         viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 SearchScreenState.InitialState -> {
-                    Timber.d("=== SearchScreenState.InitialState")
+                    Log.d("=== LOG ===", "===  SearchScreenState.InitialState")
                     unitedRecyclerView.isVisible = false
                     binding.killTheHistory.isVisible = false
                     binding.youWereLookingFor.isVisible = false
                 }
 
                 SearchScreenState.Loading -> {
-                    Timber.d("=== SearchScreenState.Loading")
+                    Log.d("=== LOG ===", "===  SearchScreenState.Loading")
                     hideKeyboard()
                     startLoadingIndicator()
                     unitedRecyclerView.isVisible = false
@@ -144,7 +144,7 @@ class SearchFragment : Fragment() {
                 }
 
                 is SearchScreenState.ShowHistory -> {
-                    Timber.d("=== SearchScreenState.ShowHistory")
+                    Log.d("=== LOG ===", "===  SearchScreenState.ShowHistory")
                     showTracksFromHistory(screenState.historyList)
                     unitedRecyclerView.isVisible = true
                     binding.killTheHistory.isVisible = historyTrackList.isNotEmpty()
@@ -153,7 +153,7 @@ class SearchFragment : Fragment() {
                 }
 
                 is SearchScreenState.SearchAPI -> {
-                    Timber.d("=== SearchScreenState.SearchAPI")
+                    Log.d("=== LOG ===", "===  SearchScreenState.SearchAPI")
                     showSearchFromAPI(screenState.searchAPIList)
                     unitedRecyclerView.isVisible = true
                     binding.killTheHistory.isVisible = false
@@ -162,7 +162,7 @@ class SearchFragment : Fragment() {
                 }
 
                 is SearchScreenState.NoResults -> {
-                    Timber.e("=== SearchScreenState.NoResults")
+                    Log.e("=== LOG ===", "=== SearchScreenState.NoResults")
                     unitedRecyclerView.isVisible = false
                     binding.killTheHistory.isVisible = false
                     binding.youWereLookingFor.isVisible = false
@@ -171,7 +171,7 @@ class SearchFragment : Fragment() {
                 }
 
                 is SearchScreenState.Error -> {
-                    Timber.e("=== SearchScreenState.Error")
+                    Log.e("=== LOG ===", "=== SearchScreenState.Error")
                     unitedRecyclerView.isVisible = false
                     binding.killTheHistory.isVisible = false
                     binding.youWereLookingFor.isVisible = false
@@ -183,7 +183,6 @@ class SearchFragment : Fragment() {
             }
         }
     }
-
 
     @SuppressLint("NotifyDataSetChanged") // Историй показывают, красивое
     private fun showTracksFromHistory(historyList: List<Track>) {
@@ -208,7 +207,7 @@ class SearchFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun showSearchFromAPI(resultsList: List<Track>) {
         if (resultsList.isNotEmpty()) {
-            Timber.d("=== class SearchActivity => fun showSearchResults( ${resultsList} )")
+            Log.d("=== LOG ===", "===  class SearchActivity => fun showSearchResults( ${resultsList} )")
             trackListFromAPI.clear()
             trackListFromAPI.addAll(resultsList)
             adapterForAPITracks.notifyDataSetChanged()
@@ -250,8 +249,8 @@ class SearchFragment : Fragment() {
             ) {
                 val searchText = queryInput.text.toString().trim()
                 clearButton.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.GONE
-                Timber.d("=== class SearchFragment  => (viewModel.searchDebounce( ${searchText} ))")
-                if (hasFocus && searchText.isEmpty()) {  // обработка ввода без нажатий
+                Log.d("=== LOG ===", "===  class SearchFragment  => (viewModel.searchDebounce( ${searchText} ))")
+                if (hasFocus && searchText.isEmpty()) {
                     showToUserHistoryOfOldTracks()
                 } else {
                     startToSearchTrackWithDebounce()
@@ -261,17 +260,19 @@ class SearchFragment : Fragment() {
             override fun afterTextChanged(editable: Editable?) {
             }
         })
+
         queryInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && queryInput.text.isEmpty()) {
                 showToUserHistoryOfOldTracks()
             } else if (queryInput.text.isNotEmpty()) {
             }
         }
+
         queryInput.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchText = queryInput.text.toString().trim()
                 if (searchText.isNotEmpty()) {
-                    startToSearchTrackRightAway() // ищем песню сразу
+                    startToSearchTrackRightAway()
                 }
                 hideKeyboard()
                 true
