@@ -9,13 +9,21 @@
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.search.ui.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_playFragment"
+            app:destination="@id/playFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/playFragment"
         android:name="com.example.playlistmaker.player.ui.PlayFragment"
         android:label="fragment_play"
-        tools:layout="@layout/fragment_play" />
+        tools:layout="@layout/fragment_play" >
+        <action
+            android:id="@+id/action_playFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/MLFragment"
@@ -30,8 +38,12 @@
 
     <fragment
         android:id="@+id/MLFavoritesFragment"
-        android:name="com.example.playlistmaker.medialibrary.favorites.MLFavoritesFragment"
-        android:label="MLFavoritesFragment" />
+        android:name="com.example.playlistmaker.medialibrary.favorites.ui.MLFavoritesFragment"
+        android:label="MLFavoritesFragment" >
+        <action
+            android:id="@+id/action_MLFavoritesFragment_to_playFragment"
+            app:destination="@id/playFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"

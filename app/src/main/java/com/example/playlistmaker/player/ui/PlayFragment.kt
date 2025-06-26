@@ -1,11 +1,12 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import com.google.android.material.snackbar.Snackbar
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.fragment.app.Fragment
@@ -28,7 +29,6 @@ class PlayFragment : Fragment() {
     private lateinit var track: Track
     private val viewModel: PlayViewModel by viewModel()
     private var isAddedToPlaylist: Boolean = false
-    private var isLiked: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,18 +40,22 @@ class PlayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            parentFragmentManager.popBackStack()
+        }
+
         val trackFromArguments = arguments?.getSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track
 
         if (trackFromArguments != null) {
             track = trackFromArguments
-            track.previewUrl?.let { viewModel.setDataURL(it) }
+            track.previewUrl?.let { viewModel.setDataURL(track) }
             viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
                 setupScreenState(screenState)
             }
             setTrackData(track)
             setupBtnsAndClickListeners()
         } else {
-            Timber.d("Track где-то потерялся")
+            Log.d("=== LOG ===", "=== Track где-то потерялся")
         }
     }
 
@@ -79,13 +83,16 @@ class PlayFragment : Fragment() {
         binding.btnPlay.setDebouncedClickListener { viewModel.playBtnClick() }
         setupLikeButton()
         setupAddToPlaylistButton()
-        val indicatorDelay =
-            DebounceExtension(AppPreferencesKeys.ONE_SECOND) { stopLoadingIndicator() }
-        indicatorDelay.debounce()
+        if (isAdded) {
+            val indicatorDelay = DebounceExtension(AppPreferencesKeys.ONE_SECOND) {
+                stopLoadingIndicator()
+            }
+            indicatorDelay.debounce()
+        }
     }
 
     private fun setupScreenState(screenState: ScreenState) {
-        Timber.d("=== class PlayActivity => setupScreenState ${screenState}")
+        Log.d("=== LOG ===", "===  class PlayActivity => setupScreenState ${screenState}")
 
         when (screenState) {
             ScreenState.Initial -> {
@@ -103,45 +110,53 @@ class PlayFragment : Fragment() {
 
             is ScreenState.Content -> {
                 setupPlayerState(screenState.playerState, screenState.playbackPosition)
+
+                val favoriteRes = if (screenState.isFavoriteTrack) {
+                    R.drawable.ic_btn_like_done
+                } else {
+                    R.drawable.ic_btn_dont_like
+                }
+                binding.btnLike.setImageResource(favoriteRes)
+
             }
         }
     }
 
     private fun setupPlayerState(playerState: PlayerState, playbackPosition: Int) {
-        Timber.d("=== class PlayActivity => setupPlayerState ${playerState}")
+        Log.d("=== LOG ===", "=== class PlayActivity => setupPlayerState ${playerState}")
         when (playerState) {
             PlayerState.INITIAL -> {
-                Timber.d("=== PlayerState.INITIAL")
+                Log.d("=== LOG ===", "=== PlayerState.INITIAL")
             }
 
             PlayerState.READY -> {
-                Timber.d("=== PlayerState.READY")
+                Log.d("=== LOG ===", "=== PlayerState.READY")
                 binding.btnPlay.setImageResource(R.drawable.ic_btn_play)
                 binding.trackTime.text =
                     SimpleDateFormat("mm:ss", Locale.getDefault()).format(0)
             }
 
             PlayerState.PLAYING -> {
-                Timber.d("=== PlayerState.PLAYING")
+                Log.d("=== LOG ===", "=== PlayerState.PLAYING")
                 binding.btnPlay.setImageResource(R.drawable.ic_btn_play_done)
                 binding.trackTime.text =
                     SimpleDateFormat("mm:ss", Locale.getDefault()).format(playbackPosition)
             }
 
             PlayerState.PAUSED -> {
-                Timber.d("=== PlayerState.PAUSED")
+                Log.d("=== LOG ===", "=== PlayerState.PAUSED")
                 binding.btnPlay.setImageResource(R.drawable.ic_btn_play)
                 binding.trackTime.text =
                     SimpleDateFormat("mm:ss", Locale.getDefault()).format(playbackPosition)
             }
 
             PlayerState.KILL -> {
-                Timber.d("=== PlayerState.KILL")
+                Log.d("=== LOG ===", "=== PlayerState.KILL")
                 binding.btnPlay.setImageResource(R.drawable.ic_btn_play)
             }
 
             PlayerState.ERROR -> {
-                Timber.d("=== PlayerState.ERROR")
+                Log.d("=== LOG ===", "=== PlayerState.ERROR")
                 binding.btnPlay.setImageResource(R.drawable.ic_error_notfound)
             }
         }
@@ -161,14 +176,10 @@ class PlayFragment : Fragment() {
     }
 
     private fun setupLikeButton() {
+
         binding.btnLike.setDebouncedClickListener {
-            val newImageResource = if (isLiked) {
-                R.drawable.ic_btn_like
-            } else {
-                R.drawable.ic_btn_like_done
-            }
-            binding.btnLike.setImageResource(newImageResource)
-            isLiked = !isLiked
+            viewModel.upsertFavoriteTrack(track)
+            Log.d("=== LOG ===", "=== PlayFragment > setupLikeButton()")
         }
     }
 
@@ -185,6 +196,7 @@ class PlayFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        //requireActivity().findViewById<View>(R.id.bottom_navigation_view)?.visibility = View.VISIBLE
         _binding = null
     }
 }
