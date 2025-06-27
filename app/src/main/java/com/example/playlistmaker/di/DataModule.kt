@@ -4,11 +4,9 @@ import android.content.Context
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.google.gson.Gson
-import com.example.playlistmaker.medialibrary.favorites.data.FavoritesRepositoryImpl
-import com.example.playlistmaker.medialibrary.favorites.data.db.AppDatabase
-import com.example.playlistmaker.medialibrary.favorites.domain.db.FavoritesInteractor
-import com.example.playlistmaker.medialibrary.favorites.domain.db.FavoritesInteractorImpl
-import com.example.playlistmaker.medialibrary.favorites.domain.db.FavoritesRepository
+import com.example.playlistmaker.medialibrary.data.db.database.FavoritesTracksDatabase
+import com.example.playlistmaker.medialibrary.data.db.converters.PlaylistDbConverter
+import com.example.playlistmaker.medialibrary.data.db.database.PlaylistsDatabase
 import com.example.playlistmaker.player.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.MediaPlayerRepository
 import com.example.playlistmaker.search.data.network.ITunesAPIService
@@ -19,7 +17,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.example.playlistmaker.settings.domain.SettingsRepository
-import com.example.playlistmaker.utils.AppPreferencesKeys.DATA_BASE_FOR_FAVORITE_TRACKS
 import org.koin.android.ext.koin.androidContext
 import retrofit2.Retrofit
 
@@ -54,7 +51,20 @@ val dataModule = module {
     factory { MediaPlayer() }
 
     single {
-        Room.databaseBuilder(androidContext(), AppDatabase::class.java, DATA_BASE_FOR_FAVORITE_TRACKS)
-            .build()
+        Room.databaseBuilder(
+            androidContext(),
+            FavoritesTracksDatabase::class.java,
+            "db1FavoritesTracks.db"
+        ).build()
     }
+
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            PlaylistsDatabase::class.java,
+            "db2Playlists.db"
+        ).build()
+    }
+
+    factory { PlaylistDbConverter(gson = get()) }
 }

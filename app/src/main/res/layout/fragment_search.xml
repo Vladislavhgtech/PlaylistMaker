@@ -64,8 +64,7 @@
                     android:inputType="text"
                     android:paddingVertical="0dp"
                     android:paddingStart="@dimen/dp24"
-                    android:text=""
-                    android:textCursorDrawable="@drawable/cursor_blue"/>
+                    android:text="" />
 
                 <ImageButton
                     android:id="@+id/clearButton"
