@@ -125,6 +125,11 @@ class PlayerFragment : Fragment() {
 
             is PlayerScreenState.Content -> {
                 setupPlayerState(screenState.playerState, screenState.playbackPosition)
+
+                binding.btnLike.setImageResource(
+                    if (screenState.isFavorite) R.drawable.ic_btn_like_done
+                    else R.drawable.ic_btn_dont_like
+                )
             }
         }
     }
@@ -177,10 +182,6 @@ class PlayerFragment : Fragment() {
     }
 
     private fun setupLikeButton() {
-        viewModel.isFavoriteTrack.observe(viewLifecycleOwner) { isFavoriteTrack ->
-            if (isFavoriteTrack) binding.btnLike.setImageResource(R.drawable.ic_btn_like_done)
-            else binding.btnLike.setImageResource(R.drawable.ic_btn_dont_like)
-        }
         binding.btnLike.setDebouncedClickListener {
             viewModel.upsertFavoriteTrack(track)
             Log.d("=== LOG ===", "=== PlayFragment > setupLikeButton()")
