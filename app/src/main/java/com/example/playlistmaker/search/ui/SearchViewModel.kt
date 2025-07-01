@@ -52,7 +52,7 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
         showActiveList()
     }
 
-    fun showActiveList() { // метод для того, чтобы после клика по списку сохраненных треков список пересобирался перенося трек на 0 место
+    fun showActiveList() {
         val activeList = tracksInteractor.getActiveList()
         if (_screenState.value !is SearchScreenState.ShowHistory || (activeList.isNotEmpty() && activeList != historyTrackList)) {
             _screenState.value = SearchScreenState.ShowHistory(activeList)

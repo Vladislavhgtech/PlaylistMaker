@@ -2,6 +2,7 @@ package com.example.playlistmaker.search.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,10 +28,14 @@ import com.example.playlistmaker.utils.startLoadingIndicator
 import com.example.playlistmaker.utils.stopLoadingIndicator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import android.util.Log
+import android.view.ViewTreeObserver
 import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.player.ui.PlayerFragment
 import com.example.playlistmaker.utils.AppPreferencesKeys.HALF_SECOND_DELAY
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -48,6 +53,7 @@ class SearchFragment : Fragment() {
     private val historyTrackList = ArrayList<Track>()
     private lateinit var adapterForHistoryTracks: AdapterForHistoryTracks
     private lateinit var adapterForAPITracks: AdapterForAPITracks
+    private var debounceJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,7 +74,6 @@ class SearchFragment : Fragment() {
         clearButton()
         queryTextChangedListener()
         killTheHistory()
-        viewModel.setInitialState()
     }
 
     override fun onDestroyView() {
@@ -82,31 +87,39 @@ class SearchFragment : Fragment() {
         unitedRecyclerView = binding.trackRecyclerView
     }
 
-    // устанавливаем адаптер на треки из АйТюнс
     private fun setupAdapterForAPITracks() {
         adapterForAPITracks = AdapterForAPITracks {
             viewModel.saveToHistory(it)
-            moveMeToPlayFragmentWithThisTrack(it)
+            val fragment = PlayerFragment()
+            val bundle = Bundle().apply {
+                putSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS, it)
+            }
+            fragment.arguments = bundle
+            parentFragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.nav_host_fragment, fragment)
+                .addToBackStack(null)
+                .commit()
         }
         adapterForAPITracks.tracks = trackListFromAPI
     }
 
-    // Устанавливаю адаптер на треки из истории сохранений
+
     private fun setupAdapterForHistoryTracks() {
         adapterForHistoryTracks = AdapterForHistoryTracks {
             viewModel.saveToHistoryAndRefresh(it)
-            moveMeToPlayFragmentWithThisTrack(it)
+            val fragment = PlayerFragment()
+            val bundle = Bundle().apply {
+                putSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS, it)
+            }
+            fragment.arguments = bundle
+            parentFragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.nav_host_fragment, fragment)
+                .addToBackStack(null)
+                .commit()
         }
         adapterForHistoryTracks.searchHistoryTracks = historyTrackList
-    }
-
-    private fun moveMeToPlayFragmentWithThisTrack(track: Track) {
-        findNavController().navigate(
-            R.id.action_searchFragment_to_trackFragment,
-            Bundle().apply {
-                putSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS, track)
-            }
-        )
     }
 
     private fun setupLayoutManager() {
@@ -121,7 +134,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    //********************************** устанавливаем наблюдатель за изменениями в состоянии экрана
 
     private fun setupObserver() {
         viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
@@ -162,10 +174,18 @@ class SearchFragment : Fragment() {
 
                 is SearchScreenState.NoResults -> {
                     Log.e("=== LOG ===", "=== SearchScreenState.NoResults")
-                    unitedRecyclerView.isVisible = false
-                    binding.killTheHistory.isVisible = false
-                    binding.youWereLookingFor.isVisible = false
-                    ifSearchErrorShowPlug(AppPreferencesKeys.RESULTS_EMPTY) {}
+
+                    val searchText = queryInput.text.toString().trim()
+                    if (searchText.isEmpty()) {
+                        // Если поле пустое — показываем историю вместо страницы "ничего не найдено"
+                        viewModel.showHistoryFromViewModel()
+                    } else {
+                        // Если поле не пустое — показываем страницу "ничего не найдено"
+                        unitedRecyclerView.isVisible = false
+                        binding.killTheHistory.isVisible = false
+                        binding.youWereLookingFor.isVisible = false
+                        ifSearchErrorShowPlug(AppPreferencesKeys.RESULTS_EMPTY) {}
+                    }
                     stopLoadingIndicator()
                 }
 
@@ -175,18 +195,13 @@ class SearchFragment : Fragment() {
                     binding.killTheHistory.isVisible = false
                     binding.youWereLookingFor.isVisible = false
                     ifSearchErrorShowPlug(AppPreferencesKeys.INTERNET_EMPTY) {
-                        viewModel.searchRequestFromViewModel(
-                            (queryInput.text.toString().trim()),
-                            true
-                        )
+                        viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), true)
                     }
                     stopLoadingIndicator()
                 }
             }
         }
     }
-
-    //****** обработка функций на показ истории сохраненных треков, удаление истории, поиск, очистка
 
     @SuppressLint("NotifyDataSetChanged") // Историй показывают, красивое
     private fun showTracksFromHistory(historyList: List<Track>) {
@@ -211,10 +226,7 @@ class SearchFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun showSearchFromAPI(resultsList: List<Track>) {
         if (resultsList.isNotEmpty()) {
-            Log.d(
-                "=== LOG ===",
-                "===  class SearchActivity => fun showSearchResults( ${resultsList} )"
-            )
+            Log.d("=== LOG ===", "===  class SearchActivity => fun showSearchResults( ${resultsList} )")
             trackListFromAPI.clear()
             trackListFromAPI.addAll(resultsList)
             adapterForAPITracks.notifyDataSetChanged()
@@ -237,7 +249,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    //************************************************************** обработка ввода в поле поиска
 
     private fun queryTextChangedListener() {
         queryInput.addTextChangedListener(object : TextWatcher {
@@ -257,12 +268,11 @@ class SearchFragment : Fragment() {
             ) {
                 val searchText = queryInput.text.toString().trim()
                 clearButton.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.GONE
-                Log.d(
-                    "=== LOG ===",
-                    "===  class SearchFragment  => (viewModel.searchDebounce( ${searchText} ))"
-                )
-                if (hasFocus && searchText.isEmpty()) {  // обработка ввода без нажатий
+                Log.d("=== LOG ===", "=== class SearchFragment => searchDebounce( $searchText )")
+
+                if (hasFocus && searchText.isEmpty()) {
                     showToUserHistoryOfOldTracks()
+                    debounceJob?.cancel()
                 } else {
                     startToSearchTrackWithDebounce()
                 }
@@ -271,19 +281,19 @@ class SearchFragment : Fragment() {
             override fun afterTextChanged(editable: Editable?) {
             }
         })
-        // Фокус + ЖЦ вход в приложение queryInput пуст
+
         queryInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && queryInput.text.isEmpty()) {
                 showToUserHistoryOfOldTracks()
             } else if (queryInput.text.isNotEmpty()) {
             }
         }
-        // обработка ввода с нажатием DONE
+
         queryInput.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchText = queryInput.text.toString().trim()
                 if (searchText.isNotEmpty()) {
-                    startToSearchTrackRightAway() // ищем песню сразу
+                    startToSearchTrackRightAway()
                 }
                 hideKeyboard()
                 true
@@ -293,30 +303,28 @@ class SearchFragment : Fragment() {
         }
     }
 
-    //************************************** отправляем реакции на клик, ввод, и тп. во viewModel
+
+
     private fun showToUserHistoryOfOldTracks() {
         viewModel.showHistoryFromViewModel()
     }
 
-    private val twoSecondDebounceSearch =  // обработка задержки в 2 сек
+    private val twoSecondDebounceSearch =
         DebounceExtension(AppPreferencesKeys.TWO_SECONDS) {
             viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), false)
         }
 
-    private fun startToSearchTrackWithDebounce() { // задержка для поиска во время ввода
-        twoSecondDebounceSearch.debounce()
+
+    private fun startToSearchTrackWithDebounce() {
+        debounceJob?.cancel()
+        debounceJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(AppPreferencesKeys.TWO_SECONDS)
+            viewModel.searchRequestFromViewModel(queryInput.text.toString().trim(), false)
+        }
     }
 
-    private fun startToSearchTrackRightAway() { // ищем трек сразу
+    private fun startToSearchTrackRightAway() {
         viewModel.searchRequestFromViewModel((queryInput.text.toString().trim()), false)
     }
 
-    override fun onResume() {
-        super.onResume()
-        startLoadingIndicator()
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(HALF_SECOND_DELAY)
-            stopLoadingIndicator()
-        }
-    }
 }

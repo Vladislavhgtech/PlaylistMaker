@@ -39,7 +39,7 @@ class PlaylistFragment : Fragment() {
 
         binding.PlaylistsRecycler.adapter = playlistAdapter
         binding.buttonNewPlayList.setOnClickListener {
-            findNavController().navigate(R.id.action_libraryFragment_to_newPlaylistFragment2)
+            findNavController().navigate(R.id.action_global_newPlaylistFragment)
         }
     }
 
