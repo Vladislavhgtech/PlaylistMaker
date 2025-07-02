@@ -50,6 +50,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputNameLayout"
         style="@style/PLLayoutForNewPlaylist"
+        android:theme="@style/CursorOnly"
         android:layout_marginTop="26dp"
         app:layout_constraintBottom_toTopOf="@id/inputDescriptionLayout"
         app:layout_constraintTop_toBottomOf="@id/addPicture"
@@ -64,6 +65,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputDescriptionLayout"
         style="@style/PLLayoutForNewPlaylist"
+        android:theme="@style/CursorOnly"
         android:layout_marginTop="10dp"
         android:tag="inputDescriptionLayout"
         app:layout_constraintTop_toBottomOf="@id/inputNameLayout"

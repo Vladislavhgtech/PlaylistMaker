@@ -203,14 +203,14 @@ class SearchFragment : Fragment() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged") // Историй показывают, красивое
+    @SuppressLint("NotifyDataSetChanged")
     private fun showTracksFromHistory(historyList: List<Track>) {
-        if (historyList.isNotEmpty() && historyList != historyTrackList) {
+        if (historyList.isNotEmpty()) {
             historyTrackList.clear()
             historyTrackList.addAll(historyList)
+            adapterForHistoryTracks.searchHistoryTracks = historyTrackList
             adapterForHistoryTracks.notifyDataSetChanged()
             unitedRecyclerView.adapter = adapterForHistoryTracks
-            viewModel.showActiveList()
         }
     }
 
@@ -226,9 +226,9 @@ class SearchFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun showSearchFromAPI(resultsList: List<Track>) {
         if (resultsList.isNotEmpty()) {
-            Log.d("=== LOG ===", "===  class SearchActivity => fun showSearchResults( ${resultsList} )")
             trackListFromAPI.clear()
             trackListFromAPI.addAll(resultsList)
+            adapterForAPITracks.tracks = trackListFromAPI
             adapterForAPITracks.notifyDataSetChanged()
             unitedRecyclerView.adapter = adapterForAPITracks
         } else {
@@ -245,6 +245,7 @@ class SearchFragment : Fragment() {
     private fun clearButton() {
         clearButton.setDebouncedClickListener {
             queryInput.text.clear()
+            unitedRecyclerView.adapter = adapterForHistoryTracks // <- явная смена адаптера
             viewModel.showHistoryFromViewModel()
         }
     }

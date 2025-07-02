@@ -54,27 +54,36 @@ class PlayerViewModel(
 
     fun upsertFavoriteTrack(track: Track) {
         viewModelScope.launch {
+            isFavoriteUpdating = true
             val currentState = _screenState.value
-            if (currentState is PlayerScreenState.Content) {
-                isFavoriteUpdating = true
-                if (currentState.isFavorite) {
-                    favoritesInteractor.deleteTrack(track)
-                    updateScreenStateFavorite(false)
-                } else {
-                    favoritesInteractor.addTrack(track)
-                    updateScreenStateFavorite(true)
-                }
-                delay(500) // небольшая задержка, чтобы дать collect обновиться
-                isFavoriteUpdating = false
+            val isCurrentlyFavorite = if (currentState is PlayerScreenState.Content) {
+                currentState.isFavorite
+            } else {
+                false
             }
+            if (isCurrentlyFavorite) {
+                favoritesInteractor.deleteTrack(track)
+                updateScreenStateFavorite(false)
+            } else {
+                favoritesInteractor.addTrack(track)
+                updateScreenStateFavorite(true)
+            }
+            delay(500)
+            isFavoriteUpdating = false
         }
     }
 
     private fun updateScreenStateFavorite(isFavorite: Boolean) {
         val currentState = _screenState.value
         if (currentState is PlayerScreenState.Content) {
+            _screenState.postValue(currentState.copy(isFavorite = isFavorite))
+        } else {
             _screenState.postValue(
-                currentState.copy(isFavorite = isFavorite)
+                PlayerScreenState.Content(
+                    playerState = PlayerState.INITIAL,
+                    playbackPosition = 0,
+                    isFavorite = isFavorite
+                )
             )
         }
     }
