@@ -177,10 +177,8 @@ class SearchFragment : Fragment() {
 
                     val searchText = queryInput.text.toString().trim()
                     if (searchText.isEmpty()) {
-                        // Если поле пустое — показываем историю вместо страницы "ничего не найдено"
                         viewModel.showHistoryFromViewModel()
                     } else {
-                        // Если поле не пустое — показываем страницу "ничего не найдено"
                         unitedRecyclerView.isVisible = false
                         binding.killTheHistory.isVisible = false
                         binding.youWereLookingFor.isVisible = false

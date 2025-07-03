@@ -28,12 +28,15 @@ import com.example.playlistmaker.utils.stopLoadingIndicator
 import com.example.playlistmaker.medialibrary.domain.model.Playlist
 import com.example.playlistmaker.medialibrary.ui.playlist.PlaylistState
 import com.example.playlistmaker.utils.showSnackbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class PlayerFragment : Fragment() {
 
     private var _binding: FragmentPlayBinding? = null
     private val binding get() = _binding!!
     private lateinit var track: Track
+
+
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var adapter: PlayerPlaylistAdapter
@@ -42,16 +45,19 @@ class PlayerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
         _binding = FragmentPlayBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
         val trackFromArguments = arguments?.getSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track
 
         if (trackFromArguments != null) {
             track = trackFromArguments
+
             track.previewUrl?.let { viewModel.setDataURL(track) }
             viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
                 setupScreenState(screenState)
@@ -254,6 +260,19 @@ class PlayerFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+    }
+
+
+
 
     companion object {
         fun createArgs(track: Track): Bundle =

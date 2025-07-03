@@ -32,7 +32,7 @@ class FavoritesFragment : Fragment() {
             if (isClickAllowed) {
                 isClickAllowed = false
                 findNavController().navigate(
-                    R.id.action_libraryFragment_to_trackFragment,
+                    R.id.action_global_trackFragment,
                     PlayerFragment.createArgs(track)
                 )
                 aboutViewModel.addTrackToHistory(track)
