@@ -90,16 +90,10 @@ class SearchFragment : Fragment() {
     private fun setupAdapterForAPITracks() {
         adapterForAPITracks = AdapterForAPITracks {
             viewModel.saveToHistory(it)
-            val fragment = PlayerFragment()
             val bundle = Bundle().apply {
                 putSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS, it)
             }
-            fragment.arguments = bundle
-            parentFragmentManager.beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.nav_host_fragment, fragment)
-                .addToBackStack(null)
-                .commit()
+            findNavController().navigate(R.id.action_global_trackFragment, bundle)
         }
         adapterForAPITracks.tracks = trackListFromAPI
     }

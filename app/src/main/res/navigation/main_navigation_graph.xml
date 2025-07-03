@@ -56,6 +56,10 @@
         android:name="com.example.playlistmaker.player.ui.PlayerFragment"
         android:label="fragment_audio_player"
         tools:layout="@layout/fragment_play" >
+        <argument
+            android:name="fromHistory"
+            app:argType="boolean"
+            android:defaultValue="false" />
         <action
             android:id="@+id/action_trackFragment_to_newPlaylistFragment"
             app:destination="@id/newPlaylistFragment" />

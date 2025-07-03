@@ -28,16 +28,6 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.action_global_trackFragment, R.id.trackFragment, R.id.newPlaylistFragment -> {
-                    bottomNavigationView.visibility = View.GONE
-                }
-                else -> {
-                    bottomNavigationView.visibility = View.VISIBLE
-                }
-            }
-        }
 
         val rootView = binding.root
 

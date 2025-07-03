@@ -52,7 +52,6 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
         val trackFromArguments = arguments?.getSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track
 
         if (trackFromArguments != null) {
@@ -254,11 +253,6 @@ class PlayerFragment : Fragment() {
     private fun defeat() {
         showSnackbar(resources.getString(R.string.addToPlaylistDefeat))
         viewModel.deleteValueStateAddTrack()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onResume() {
