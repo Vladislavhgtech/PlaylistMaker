@@ -32,11 +32,11 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
         _screenState.value = SearchScreenState.Loading
         viewModelScope.launch {
             tracksInteractor.searchTracks(searchText).collect { response ->
-                if (response.resultCode == 200) {
-                    _screenState.postValue(SearchScreenState.SearchAPI(response.results))
-                } else _screenState.postValue(SearchScreenState.Error)
-            }
-        }}
+            if (response.resultCode == 200) {
+                _screenState.postValue(SearchScreenState.SearchAPI(response.results))
+            } else _screenState.postValue(SearchScreenState.Error)
+        }
+    }}
 
     fun killHistory() {
         tracksInteractor.killHistory()
@@ -59,7 +59,7 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
         }
     }
 
-    override fun onCleared() {
+     override fun onCleared() {
         super.onCleared()
     }
 
@@ -71,3 +71,4 @@ class SearchViewModel(private val tracksInteractor: TracksInteractor) : ViewMode
         _screenState.value = SearchScreenState.NoResults
     }
 }
+

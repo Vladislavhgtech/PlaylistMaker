@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 
 class DebounceExtension(private val delayMillis: Long, private val action: () -> Unit) {
     private var debounceJob: Job? = null
-
     fun debounce() {
         debounceJob?.cancel()
         debounceJob = CoroutineScope(Dispatchers.Main).launch {
@@ -20,7 +19,7 @@ class DebounceExtension(private val delayMillis: Long, private val action: () ->
 }
 
 
-fun View.setDebouncedClickListener(delayMillis: Long = AppPreferencesKeys.CLICK_DEBOUNCE_DELAY, onClick: () -> Unit) {
+fun View.setDebouncedClickListener(delayMillis: Long = AppPreferencesKeys.HALF_SECOND_DELAY, onClick: () -> Unit) {
     var debounceJob: Job? = null
     setOnClickListener {
         debounceJob?.cancel()
