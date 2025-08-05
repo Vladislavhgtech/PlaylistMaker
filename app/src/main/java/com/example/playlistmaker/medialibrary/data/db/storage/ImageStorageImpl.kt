@@ -15,7 +15,7 @@ import com.example.playlistmaker.medialibrary.domain.others.ImageStorage
 class ImageStorageImpl(private val context: Context) : ImageStorage {
 
     override fun saveImageToPrivateStorage(uri: Uri): String {
-        // Создание директории для сохранения изображений
+
         val filePath = File(
             context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "krasavchik"
@@ -24,15 +24,12 @@ class ImageStorageImpl(private val context: Context) : ImageStorage {
             filePath.mkdirs()
         }
 
-        // Генерация уникального имени файла на основе текущего времени
         val imageName = Calendar.getInstance().time.toString()
         val file = File(filePath, imageName)
 
-        // Открытие входного и выходного потоков для копирования изображения
         val inputStream = context.contentResolver.openInputStream(uri)
         val outputStream = FileOutputStream(file)
 
-        // Сжатие и сохранение изображения в формате JPEG
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 40, outputStream)
@@ -41,7 +38,7 @@ class ImageStorageImpl(private val context: Context) : ImageStorage {
     }
 
     override fun getImageFromPrivateStorage(imageName: String): Uri {
-        // Получение пути к директории с изображениями
+
         val filePath = File(
             context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "krasavchik"

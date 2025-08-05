@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
+        <!-- левая сторона экрана + центр = двусвязный список -->
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_guideline"
             android:layout_width="wrap_content"
@@ -201,6 +201,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleCountry" />
 
+        <!-- правая сторона -->
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/right_guideline"
             android:layout_width="wrap_content"
@@ -312,6 +313,8 @@
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- выдвижная панелька с предложением добавить трек в плейлист -->
 
     <View
         android:id="@+id/overlay"

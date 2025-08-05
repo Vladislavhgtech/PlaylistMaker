@@ -85,6 +85,7 @@ dependencies {
 
     kapt("androidx.room:room-compiler:2.6.1")
 
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
 
 }

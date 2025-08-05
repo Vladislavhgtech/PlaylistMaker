@@ -43,4 +43,3 @@ class MLFragment : Fragment() {
         _binding = null
     }
 }
-

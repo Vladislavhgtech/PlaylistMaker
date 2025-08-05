@@ -6,7 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 import com.example.playlistmaker.medialibrary.ui.favorites.FavoritesFragment
-import com.example.playlistmaker.medialibrary.ui.playlist.PlaylistFragment
+import com.example.playlistmaker.medialibrary.ui.allplaylists.AllPlayListsFragment
 
 class MLViewPagerAdapter(
     fragmentManager: FragmentManager,
@@ -20,7 +20,7 @@ class MLViewPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         return when(position) {
             0 -> FavoritesFragment.newInstance()
-            else -> PlaylistFragment.newInstance()
+            else -> AllPlayListsFragment.newInstance()
         }
     }
 }

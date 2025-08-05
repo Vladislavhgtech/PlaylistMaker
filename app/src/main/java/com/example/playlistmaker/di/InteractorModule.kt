@@ -34,3 +34,4 @@ val interactorModule = module {
         PlaylistInteractorImpl(repository = get(), imageStorage = get())
     }
 }
+

@@ -18,7 +18,6 @@ class DebounceExtension(private val delayMillis: Long, private val action: () ->
     }
 }
 
-
 fun View.setDebouncedClickListener(delayMillis: Long = AppPreferencesKeys.HALF_SECOND_DELAY, onClick: () -> Unit) {
     var debounceJob: Job? = null
     setOnClickListener {

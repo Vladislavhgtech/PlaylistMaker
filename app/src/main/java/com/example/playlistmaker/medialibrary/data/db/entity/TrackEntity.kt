@@ -5,15 +5,15 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "track_table")
 data class TrackEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int?, // Id DB
-    val trackId: Int?,              // Id трека
-    val trackName: String?,          // Название
-    val artistName: String?,          // Исполнитель
-    val trackTimeMillis: Long?,       // Продолжительность
-    val artworkUrl100: String?,       // Пикча на обложку
-    val collectionName: String?,      // Название альбома
-    val releaseDate: String?,         // Год
-    val primaryGenreName: String?,    // Жанр
-    val country: String?,             // Страна
-    val previewUrl: String?           // ссылка на 30 сек. фрагмент
+    @PrimaryKey(autoGenerate = true) val id: Int?,
+    val trackId: Int?,
+    val trackName: String?,
+    val artistName: String?,
+    val trackTimeMillis: Long?,
+    val artworkUrl100: String?,
+    val collectionName: String?,
+    val releaseDate: String?,
+    val primaryGenreName: String?,
+    val country: String?,
+    val previewUrl: String?
 )

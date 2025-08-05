@@ -15,7 +15,7 @@
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_dark_mode"
-        style="@style/SecondaryButtonsAndText"
+        style="@style/CustomSwitch"
         android:layout_height="wrap_content"
         android:checked="false"
         android:gravity="center_vertical"
@@ -46,5 +46,25 @@
         android:text="@string/user_agreement"
         app:icon="@drawable/ic_btn_arrow_forward"
         tools:ignore="VisualLintButtonSize" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/dp12"
+        android:text="@string/about_this_app2"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/dp12"
+        android:text="@string/about_this_app"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </LinearLayout>

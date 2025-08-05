@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.medialibrary.domain.others.FavoritesTracksInteractor
 import com.example.playlistmaker.medialibrary.domain.model.Playlist
 import com.example.playlistmaker.medialibrary.domain.others.PlaylistsInteractor
-import com.example.playlistmaker.medialibrary.ui.playlist.PlaylistState
+import com.example.playlistmaker.medialibrary.ui.allplaylists.AllPlaylistsState
 import com.example.playlistmaker.player.domain.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
@@ -22,16 +22,16 @@ class PlayerViewModel(
     private val favoritesInteractor: FavoritesTracksInteractor,
     private val playlistsInteractor: PlaylistsInteractor,
     private val track: Track
-
 ) : ViewModel() {
 
     private val _screenState = MutableLiveData<PlayerScreenState>(PlayerScreenState.Initial)
     val screenState: LiveData<PlayerScreenState> = _screenState
-    private var isFavoriteUpdating = false
 
+    private val _isFavoriteTrack = MutableLiveData(false)
+    val isFavoriteTrack: LiveData<Boolean> = _isFavoriteTrack
 
-    private val _statePlaylist = MutableLiveData<PlaylistState>()
-    val statePlaylist: LiveData<PlaylistState> = _statePlaylist
+    private val _statePlaylist = MutableLiveData<AllPlaylistsState>()
+    val statePlaylist: LiveData<AllPlaylistsState> = _statePlaylist
 
     private val _stateAddTrack = MutableLiveData<Boolean?>(null)
     val stateAddTrack: LiveData<Boolean?> = _stateAddTrack
@@ -41,50 +41,34 @@ class PlayerViewModel(
     private var timerJob: Job? = null
 
     init {
+        mediaPlayerInteractor.getPlayerReady()
         viewModelScope.launch {
             favoritesInteractor.getTracksIDs().collect { trackIds ->
-                if (!isFavoriteUpdating) {
-                    val isFavorite = trackIds.contains(trackId)
-                    updateScreenStateFavorite(isFavorite)
+                _isFavoriteTrack.value = trackIds.contains(trackId)
+            }
+        }
+
+        viewModelScope.launch {
+            playlistsInteractor.getAllPlaylists().collect { result ->
+                if (result.isEmpty()) {
+                    _statePlaylist.postValue(AllPlaylistsState.Empty(result))
+                } else {
+                    _statePlaylist.postValue(AllPlaylistsState.Content(result))
                 }
             }
         }
-
     }
 
     fun upsertFavoriteTrack(track: Track) {
+        Log.d("=== LOG ===", "=== PlayViewModel > changeFavoriteClick(track: Track)")
         viewModelScope.launch {
-            isFavoriteUpdating = true
-            val currentState = _screenState.value
-            val isCurrentlyFavorite = if (currentState is PlayerScreenState.Content) {
-                currentState.isFavorite
-            } else {
-                false
-            }
-            if (isCurrentlyFavorite) {
+            if (_isFavoriteTrack.value == true) {
                 favoritesInteractor.deleteTrack(track)
-                updateScreenStateFavorite(false)
+                _isFavoriteTrack.postValue(false)
             } else {
                 favoritesInteractor.addTrack(track)
-                updateScreenStateFavorite(true)
+                _isFavoriteTrack.postValue(true)
             }
-            delay(500)
-            isFavoriteUpdating = false
-        }
-    }
-
-    private fun updateScreenStateFavorite(isFavorite: Boolean) {
-        val currentState = _screenState.value
-        if (currentState is PlayerScreenState.Content) {
-            _screenState.postValue(currentState.copy(isFavorite = isFavorite))
-        } else {
-            _screenState.postValue(
-                PlayerScreenState.Content(
-                    playerState = PlayerState.INITIAL,
-                    playbackPosition = 0,
-                    isFavorite = isFavorite
-                )
-            )
         }
     }
 
@@ -105,13 +89,7 @@ class PlayerViewModel(
     private fun updatePlayerInfo() {
         val playerState = mediaPlayerInteractor.getState()
         val playbackPosition = mediaPlayerInteractor.getPlaybackPosition()
-        val isFavorite = (_screenState.value as? PlayerScreenState.Content)?.isFavorite ?: false
-
-        _screenState.value = PlayerScreenState.Content(
-            playerState = playerState,
-            playbackPosition = playbackPosition,
-            isFavorite = isFavorite
-        )
+        _screenState.value = PlayerScreenState.Content(playerState, playbackPosition)
     }
 
     fun playBtnClick() {
@@ -147,7 +125,7 @@ class PlayerViewModel(
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         if (!playlist.tracksIds.contains(track.trackId)) {
             viewModelScope.launch {
-                playlistsInteractor.updatePlaylist(track, playlist)
+                playlistsInteractor.updatePlaylistAndAddTrack(track, playlist)
                 _stateAddTrack.postValue(true)
             }
         } else {
