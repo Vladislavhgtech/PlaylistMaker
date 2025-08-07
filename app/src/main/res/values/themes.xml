@@ -1,14 +1,16 @@
 <resources>
-    <style name="Theme.MyApp" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/yp_white</item>
         <item name="colorOnPrimary">@color/yp_black</item>
         <item name="colorOnTertiary">@color/yp_light_gray</item>
         <item name="materialAlertDialogTheme">@style/MaterialAlertDialog</item>
     </style>
 
-    <style name="MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+    <style name="MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="materialAlertDialogTitleTextStyle">@style/PLMaterialAlertDialog.App.Title.Text</item>
         <item name="buttonBarNegativeButtonStyle">@style/PLWidget.App.Button</item>
         <item name="buttonBarNeutralButtonStyle">@style/PLWidget.App.Button</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PLWidget.App.Button</item> <!-- тоже на всякий -->
+        <item name="buttonBarStyle">@style/PLWidget.App.Button</item>
     </style>
 </resources>

@@ -52,7 +52,10 @@
         style="@style/PLLayoutForNewPlaylist"
         android:layout_marginTop="26dp"
         app:layout_constraintBottom_toTopOf="@id/inputDescriptionLayout"
-        app:layout_constraintTop_toBottomOf="@id/addPicture">
+        app:layout_constraintTop_toBottomOf="@id/addPicture"
+        app:boxBackgroundColor="@color/yp_white_and_yp_black"
+        app:boxBackgroundMode="outline"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputName"
@@ -65,7 +68,9 @@
         style="@style/PLLayoutForNewPlaylist"
         android:layout_marginTop="10dp"
         android:tag="inputDescriptionLayout"
-        app:layout_constraintTop_toBottomOf="@id/inputNameLayout">
+        app:layout_constraintTop_toBottomOf="@id/inputNameLayout"
+        app:boxBackgroundColor="@color/yp_white_and_yp_black"
+        app:boxBackgroundMode="outline">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputDescription"

@@ -70,6 +70,7 @@ class OpenPlaylistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         playlistId = requireArguments().getInt(PLAYLIST_KEY)
         binding.rvListPlaylists.adapter = trackAdapter
 

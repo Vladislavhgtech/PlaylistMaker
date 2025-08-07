@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <style name="FrontMenuLayout" parent="Widget.MaterialComponents.TextView">
+ <style name="FrontMenuLayout" parent="Widget.MaterialComponents.TextView">
         <item name="buttonStyle">@style/SecondaryButtonsAndText</item>
         <item name="android:textSize">@dimen/text_size_sp16</item>
         <item name="android:textColor">@color/yp_black_and_yp_black</item>
@@ -13,7 +13,7 @@
         <item name="android:letterSpacing">0.0</item>
     </style>
 
-    <style name="BackMenuLayout" parent="Widget.MaterialComponents.TextView">
+ <style name="BackMenuLayout" parent="Widget.MaterialComponents.TextView">
         <item name="buttonStyle">@style/SecondaryButtonsAndText</item>
         <item name="android:textSize">@dimen/text_size_sp16</item>
         <item name="android:textColor">@color/yp_black_and_yp_white</item>
@@ -24,7 +24,7 @@
         <item name="android:letterSpacing">0.0</item>
     </style>
 
-    <style name="MainMenuButtons" parent="Widget.MaterialComponents.Button">
+  <style name="MainMenuButtons" parent="Widget.MaterialComponents.Button">
         <item name="buttonStyle">@style/MainMenuButtons</item>
         <item name="android:textSize">@dimen/text_size_sp22</item>
         <item name="android:textColor">@color/yp_black_and_yp_black</item>
@@ -44,7 +44,7 @@
         <item name="android:letterSpacing">0.0</item>
     </style>
 
-    <style name="SecondaryButtonsAndText" parent="Widget.MaterialComponents.Button">
+  <style name="SecondaryButtonsAndText" parent="Widget.MaterialComponents.Button">
         <item name="android:textSize">@dimen/text_size_sp16</item>
         <item name="android:textColor">@color/yp_black_and_yp_white</item>
         <item name="android:gravity">start</item>
@@ -55,16 +55,16 @@
         <item name="iconPadding">@dimen/dp16</item>
         <item name="iconSize">@dimen/dp24</item>
         <item name="iconTint">@color/yp_text_gray_and_yp_white</item>
-        <item name="android:textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item> <!-- капс -->
         <item name="android:padding">@dimen/dp16</item>
-        <item name="android:elevation">0dp</item>
-        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item> <!-- тени -->
+        <item name="android:stateListAnimator">@null</item> <!-- анимации нажатия -->
         <item name="android:fontFamily">@font/ys_text_regular</item>
         <item name="android:backgroundTint">@color/yp_white_and_yp_black</item>
         <item name="android:letterSpacing">0.0</item>
     </style>
 
-    <style name="GoBackButtons" parent="Widget.MaterialComponents.Button">
+ <style name="GoBackButtons" parent="Widget.MaterialComponents.Button">
         <item name="buttonStyle">@style/SecondaryButtonsAndText</item>
         <item name="android:textSize">@dimen/text_size_sp22</item>
         <item name="android:textColor">@color/yp_black_and_yp_white</item>
@@ -86,7 +86,7 @@
         <item name="android:letterSpacing">0.0</item>
     </style>
 
-    <style name="SearchButtons" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+ <style name="SearchButtons" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:background">@drawable/util_rounded_corners_8dp_light_gray</item>
         <item name="android:textSize">@dimen/text_size_sp16</item>
         <item name="android:textColor">@color/yp_black_and_yp_black</item>
@@ -127,7 +127,7 @@
         <item name="android:tint">@android:color/transparent</item>
     </style>
 
-    <style name="TrackText" parent="Widget.MaterialComponents.TextView">
+  <style name="TrackText" parent="Widget.MaterialComponents.TextView">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textSize">@dimen/text_size_sp16</item>
         <item name="android:textColor">@color/yp_black_and_yp_white</item>
@@ -138,30 +138,30 @@
         <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <style name="TrackTextSmall" parent="TrackText">
+   <style name="TrackTextSmall" parent="TrackText">
         <item name="android:textSize">@dimen/text_size_sp11</item>
         <item name="android:textColor">@color/yp_text_gray_and_yp_white</item>
     </style>
 
-    <style name="TitleTextSmall" parent="TrackText">
+  <style name="TitleTextSmall" parent="TrackText">
         <item name="android:textSize">@dimen/text_size_sp13</item>
         <item name="android:textColor">@color/yp_text_gray_and_yp_text_gray</item>
     </style>
 
-    <style name="ContentTextSmall" parent="TitleTextSmall">
+   <style name="ContentTextSmall" parent="TitleTextSmall">
         <item name="android:textColor">@color/yp_black_and_yp_white</item>
     </style>
 
-    <style name="TrackNameText" parent="Widget.MaterialComponents.TextView">
+  <style name="TrackNameText" parent="Widget.MaterialComponents.TextView">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textSize">@dimen/text_size_sp22</item>
         <item name="android:textColor">@color/yp_black_and_yp_white</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:elevation">0dp</item>
-        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item> <!-- тени -->
+        <item name="android:stateListAnimator">@null</item> <!-- анимацию нажатия -->
     </style>
 
-    <style name="TrackArtistText" parent="TrackNameText">
+ <style name="TrackArtistText" parent="TrackNameText">
         <item name="android:textSize">@dimen/text_size_sp14</item>
     </style>
 
@@ -180,7 +180,7 @@
         <item name="android:letterSpacing">0.0</item>
     </style>
 
-    <style name="ErrorTextBig" parent="TrackText">
+ <style name="ErrorTextBig" parent="TrackText">
         <item name="android:textSize">@dimen/text_size_sp19</item>
         <item name="android:textColor">@color/yp_black_and_yp_white</item>
         <item name="android:textAllCaps">false</item>
@@ -198,6 +198,7 @@
         <item name="tabRippleColor">@color/yp_black_and_yp_white</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
+
 
     <style name="Gasket" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">@dimen/text_size_sp22</item>
@@ -238,7 +239,12 @@
         <item name="hintTextColor">@color/input_field</item>
         <item name="boxStrokeWidthFocused">1dp</item>
         <item name="android:layout_marginHorizontal">18dp</item>
-        <item name="android:textColorHint">?attr/colorOnPrimary</item>
+        <item name="android:textColorHint">@color/yp_playlist_text</item>
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="android:textColor">@android:color/black</item>
+
+
     </style>
 
     <style name="PLbuttonCreateNewPlaylist">
@@ -255,16 +261,31 @@
 
     <style name="PLMaterialAlertDialog.App.Title.Text" parent="MaterialAlertDialog.Material3.Title.Text">
         <item name="android:textColor">?attr/colorOnPrimary</item>
+
     </style>
 
+
+
     <style name="PLWidget.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
-        <item name="android:textColor">?attr/colorOnPrimary</item>
-        <item name="android:titleTextColor">?attr/colorOnPrimary</item>
+        <item name="android:textColor">@color/dialog_button_color</item>
+        <item name="android:titleTextColor">@color/dialog_button_color</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.078</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:gravity">end</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+
     </style>
 
     <style name="PLItemMenu">
         <item name="android:fontFamily">@font/ys_display_regular</item>
-        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textColor">@color/yp_playlist_text</item>
         <item name="android:textSize">16sp</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:gravity">center_vertical</item>

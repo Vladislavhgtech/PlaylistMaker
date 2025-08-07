@@ -81,4 +81,6 @@
         The application is published to demonstrate the capabilities of the stack, the developer, and
         the Yandex Practice training course where it was made. The application is not a finished product
         and is not subject to commercial use.</string>
+
+    <string name="playlist_empty_message">The playlist is empty</string>
 </resources>
