@@ -265,7 +265,6 @@
     </style>
 
 
-
     <style name="PLWidget.App.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/dialog_button_color</item>
         <item name="android:titleTextColor">@color/dialog_button_color</item>

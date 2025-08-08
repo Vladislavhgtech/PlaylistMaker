@@ -1,9 +1,11 @@
 package com.example.playlistmaker.medialibrary.ui.openplaylist
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ import com.example.playlistmaker.utils.AppPreferencesKeys.PLAYLIST_KEY
 import com.example.playlistmaker.utils.GlideUrlLoader
 import com.example.playlistmaker.utils.DebounceExtension
 import com.example.playlistmaker.utils.showSnackbar
+import androidx.core.graphics.toColorInt
 
 class OpenPlaylistFragment : Fragment() {
 
@@ -130,7 +133,8 @@ class OpenPlaylistFragment : Fragment() {
         }
 
         binding.deletePlaylist.setOnClickListener {
-            showDialogForDeletePlaylist()
+            val playlistName = binding.playlistName.text.toString()
+            showDialogForDeletePlaylist(playlistName)
             bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
@@ -171,34 +175,56 @@ class OpenPlaylistFragment : Fragment() {
     }
 
     private fun showDialogForDeleteTrack(track: Track) {
-        MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog)
+        val dialog = MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog)
             .setTitle(R.string.delete_track)
             .setMessage(R.string.delete_track2)
-            .setNegativeButton(R.string.no) { _, _ ->
-            }
+            .setNegativeButton(R.string.no, null)
             .setPositiveButton(R.string.yes) { _, _ ->
                 track.trackId?.let {
                     viewModel.deleteTrackFromPlaylist(it)
                 }
-            }.show()
+            }
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(android.R.color.white)
+            val messageView = dialog.findViewById<TextView>(android.R.id.message)
+            messageView?.setTextColor("#1A1B22".toColorInt())
+            dialog.window?.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        dialog.show()
     }
 
 
-    private fun showDialogForDeletePlaylist() {
-        MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog)
+    private fun showDialogForDeletePlaylist(playlistName: String) {
+        val message = "Хотите удалить плэйлист \"$playlistName\"?"
+
+        val dialog = MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog)
             .setTitle(R.string.deletePlaylist)
-            .setMessage(R.string.deletePlaylist2)
-            .setNegativeButton(R.string.no) { _, _ ->
-            }
+            .setMessage(message)
+            .setNegativeButton(R.string.no, null)
             .setPositiveButton(R.string.yes) { _, _ ->
                 viewModel.deletePlaylist()
-            }.show()
+            }
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(android.R.color.white)
+            dialog.findViewById<TextView>(android.R.id.message)
+                ?.setTextColor("#1A1B22".toColorInt())
+            dialog.window?.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        dialog.show()
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.updatePlaylist()
-    }
 
     private fun sharePlaylist() {
         if (trackAdapter.tracks.isEmpty()) {

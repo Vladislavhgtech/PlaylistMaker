@@ -32,6 +32,9 @@
             android:id="@+id/action_libraryFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
         <action
+            android:id="@+id/action_global_to_playerFragment"
+            app:destination="@id/playerFragment" />
+        <action
             android:id="@+id/action_libraryFragment_to_openPlaylistFragment"
             app:destination="@id/openPlaylistFragment" />
     </fragment>
@@ -88,4 +91,8 @@
         android:id="@+id/editPlaylistFragment"
         android:name="com.example.playlistmaker.medialibrary.ui.editplaylist.EditPlaylistFragment"
         android:label="EditPlaylistFragment" />
+
+    <action
+        android:id="@+id/action_global_to_playerFragment"
+        app:destination="@id/playerFragment" />
 </navigation>

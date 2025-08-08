@@ -10,7 +10,8 @@
         <item name="materialAlertDialogTitleTextStyle">@style/PLMaterialAlertDialog.App.Title.Text</item>
         <item name="buttonBarNegativeButtonStyle">@style/PLWidget.App.Button</item>
         <item name="buttonBarNeutralButtonStyle">@style/PLWidget.App.Button</item>
-        <item name="buttonBarPositiveButtonStyle">@style/PLWidget.App.Button</item> <!-- тоже на всякий -->
-        <item name="buttonBarStyle">@style/PLWidget.App.Button</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PLWidget.App.Button</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>
