@@ -174,22 +174,23 @@ class OpenPlaylistFragment : Fragment() {
         MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog)
             .setTitle(R.string.delete_track)
             .setMessage(R.string.delete_track2)
-            .setNeutralButton(R.string.no) { _, _ ->
+            .setNegativeButton(R.string.no) { _, _ ->
             }
-            .setNegativeButton(R.string.yes) { _, _ ->
+            .setPositiveButton(R.string.yes) { _, _ ->
                 track.trackId?.let {
                     viewModel.deleteTrackFromPlaylist(it)
                 }
             }.show()
     }
 
+
     private fun showDialogForDeletePlaylist() {
         MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog)
             .setTitle(R.string.deletePlaylist)
             .setMessage(R.string.deletePlaylist2)
-            .setNeutralButton(R.string.no) { _, _ ->
+            .setNegativeButton(R.string.no) { _, _ ->
             }
-            .setNegativeButton(R.string.yes) { _, _ ->
+            .setPositiveButton(R.string.yes) { _, _ ->
                 viewModel.deletePlaylist()
             }.show()
     }

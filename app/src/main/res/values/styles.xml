@@ -260,13 +260,13 @@
     </style>
 
     <style name="PLMaterialAlertDialog.App.Title.Text" parent="MaterialAlertDialog.Material3.Title.Text">
-        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textColor">@color/yp_white</item>
 
     </style>
 
 
 
-    <style name="PLWidget.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+    <style name="PLWidget.App.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/dialog_button_color</item>
         <item name="android:titleTextColor">@color/dialog_button_color</item>
         <item name="android:fontFamily">sans-serif</item>
