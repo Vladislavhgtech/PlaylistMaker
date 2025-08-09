@@ -1,6 +1,8 @@
 package com.example.playlistmaker.medialibrary.ui.openplaylist
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,10 +29,18 @@ import com.example.playlistmaker.utils.GlideUrlLoader
 import com.example.playlistmaker.utils.DebounceExtension
 import com.example.playlistmaker.utils.showSnackbar
 import androidx.core.graphics.toColorInt
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 
 class OpenPlaylistFragment : Fragment() {
 
+    private var currentPlaylistImageUrl: Uri? = null
+
+
+
     private var playlistId: Int? = null
+
 
     private val viewModel: OpenPlaylistViewModel by viewModel {
         parametersOf(playlistId)
@@ -112,6 +122,7 @@ class OpenPlaylistFragment : Fragment() {
                     }
                     else -> {
                         binding.overlay.visibility = View.VISIBLE
+
                     }
                 }
             }
@@ -130,6 +141,21 @@ class OpenPlaylistFragment : Fragment() {
 
         binding.menu.setOnClickListener {
             bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_COLLAPSED
+
+            currentPlaylistImageUrl?.let { imageUrl ->
+                Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_playlist_placeholder)
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                            binding.root.background = resource
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            binding.root.background = placeholder
+                        }
+                    })
+            }
         }
 
         binding.deletePlaylist.setOnClickListener {
@@ -148,6 +174,9 @@ class OpenPlaylistFragment : Fragment() {
 
 
     private fun showPlaylist(playlist: OpenPlaylistState.Content) {
+
+        currentPlaylistImageUrl = playlist.imageUrl
+
         binding.playlistName.text = playlist.playlistName
         if (playlist.playlistDetails?.isNotEmpty() == true) {
             binding.playlistDetails.visibility = View.VISIBLE
