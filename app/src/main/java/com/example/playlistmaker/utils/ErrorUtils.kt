@@ -28,7 +28,7 @@ object ErrorUtils {
                 errorTextWeb?.text = resources.getString(R.string.error_text_web)
                 retryButton?.visibility = View.VISIBLE
                 retryButton?.setDebouncedClickListener {
-                    sendRequestForDoReserch() // тут отправляем на повторный поиск
+                    sendRequestForDoReserch()
                     utilErrorBox?.visibility = View.GONE
                 }
                 utilErrorBox?.setDebouncedClickListener {
@@ -51,7 +51,7 @@ object ErrorUtils {
         }
     }
 
-    fun Fragment.ifMedialibraryErrorShowPlug(
+    fun Fragment.inMedialibraryShowPlug(
         context: Context,
         problemTipo: String
     ) {
@@ -76,6 +76,10 @@ object ErrorUtils {
             AppPreferencesKeys.LOADING -> {
                 errorTextWeb?.text = ""
                 retryButton?.visibility = View.GONE
+            }
+
+            AppPreferencesKeys.HIDE -> {
+                utilErrorBox?.visibility = View.GONE
             }
 
             else -> {

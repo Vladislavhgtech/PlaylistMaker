@@ -19,7 +19,7 @@ class FavoritesTracksInteractorImpl(private val repository: FavoritesTracksRepos
         Log.d("=== LOG ===", "=== FavoritesInteractorImpl > changeFavorite(track: Track)")
         if (track.trackId?.let { repository.getTrackById(it) } == null) {
             repository.addTrack(track)
-    }}
+        }}
 
     override suspend fun deleteTrack(track: Track) {
         repository.deleteTrack(track)

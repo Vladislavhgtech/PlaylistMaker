@@ -21,7 +21,7 @@ class SettingsRepositoryImpl(private val context: Context, private val sharedPre
         sharedPreferences.edit().putBoolean(KEY_NIGHT_MODE, value).apply()
     }
 
-    override fun applyTheme() {
+    override fun applyTheme() { // функция, применяющая настройки день/ночь на все приложение, передаю в Application()
         val nightModeEnabled = loadNightMode()
         if (nightModeEnabled) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -36,7 +36,7 @@ class SettingsRepositoryImpl(private val context: Context, private val sharedPre
         intent.type = "text/plain"
         intent.putExtra(
             Intent.EXTRA_TEXT,
-            context.getString(R.string.share_app_text) + appId
+            context.getString(R.string.share_app_text) + appId // идентификатор приложения
         )
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val chooserIntent = Intent.createChooser(intent, context.getString(R.string.share_app_title))
@@ -59,6 +59,14 @@ class SettingsRepositoryImpl(private val context: Context, private val sharedPre
         val url = context.getString(R.string.user_agreement_url)
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    }
+
+    override fun sharePlaylist(message: String) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, message)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }

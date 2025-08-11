@@ -6,7 +6,9 @@ internal object AppPreferencesKeys {
     const val KEY_NIGHT_MODE = "nightMode"
     const val SEARCH_HISTORY = "search_history"
     const val AN_INSTANCE_OF_THE_TRACK_CLASS = "an instance of the Track class"
+    const val PLAYLIST_KEY = "an instance of the playlist"
     const val iTunesSearchUrl = "https://itunes.apple.com"
+
 
     const val ALBUM_ROUNDED_CORNERS = 8
     const val HISTORY_TRACK_LIST_SIZE = 6
@@ -20,4 +22,5 @@ internal object AppPreferencesKeys {
     const val FAVORITES_EMPTY = "favorites_empty"
     const val PLAYLISTS_EMPTY = "playlists_empty"
     const val LOADING = "loading"
+    const val HIDE = "hide"
 }

@@ -12,9 +12,8 @@ import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
@@ -23,12 +22,10 @@ import com.example.playlistmaker.utils.showSnackbar
 import com.example.playlistmaker.utils.startLoadingIndicator
 import com.example.playlistmaker.utils.stopLoadingIndicator
 
+open class NewPlaylistFragment : Fragment() {
 
-
-class NewPlaylistFragment : Fragment() {
-
-    private lateinit var binding: FragmentNewPlaylistBinding
-    private val playlistViewModel: NewPlaylistViewModel by viewModel()
+    open lateinit var binding: FragmentNewPlaylistBinding
+    open val playlistViewModel: NewPlaylistViewModel by viewModel()
     private var playlistName: String = ""
     private var playlistDescription: String = ""
     private var playlistCoverUri: Uri? = null
@@ -109,7 +106,7 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun showConfirmDialog() {
-        MaterialAlertDialogBuilder(requireActivity(), com.google.android.material.R.style.MaterialAlertDialog_Material3)
+        MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog)
             .setTitle(resources.getString(R.string.finishCreatingPlaylist))
             .setMessage(resources.getString(R.string.unsavedDataWillBeLost))
             .setNeutralButton(resources.getString(R.string.cancel), null)

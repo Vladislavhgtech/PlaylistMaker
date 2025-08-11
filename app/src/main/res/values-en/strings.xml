@@ -51,16 +51,36 @@
     <string name="havent_created_any_playlists">Havent created any playlists</string>
     <string name="new_play_list">New play list</string>
     <string name="app_id">ru.yandex.practicum.flutter_practicum</string>
-
     <string name="dialog_title">title</string>
     <string name="name">name</string>
     <string name="description">description</string>
     <string name="addToPlaylist">add to Playlist</string>
     <string name="addToPlaylistSuccess">"added to Playlist "</string>
     <string name="addToPlaylistDefeat">allready in PlayList</string>
-    <string name="finishCreatingPlaylist">Stop creating Playlist?</string>
-    <string name="unsavedDataWillBeLost">ou no!</string>
-    <string name="create">create</string>
-    <string name="cancel">cancel</string>
-    <string name="end">end</string>
+    <string name="finishCreatingPlaylist">Finish creating playlist?</string>
+    <string name="unsavedDataWillBeLost">All unsaved data will be lost</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="end">Finish</string>
+    <string name="save">Save</string>
+    <string name="share_playlist">Share</string>
+    <string name="edit_info">Edit info</string>
+    <string name="deletePlaylist">Delete playlist</string>
+    <string name="delete_track">Delete track</string>
+    <string name="deletePlaylist2">Do you want to delete the playlist?</string>
+    <string name="delete_track2">Are you sure you want to delete the track from the playlist?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="havent_created_any_track">Havent created any track</string>
+    <string name="about_this_app">Melody Quest\n\nThe application uses the music database from itunes.apple.com.
+        Users can retrieve a list of songs based on a query, add songs to favorites, create playlists, add or
+        remove tracks from playlists, and listen to a preview clip. Playlists, album covers, and application
+        settings are stored on the user\'s device using Room database.\nStack: Kotlin, MVVM, Koin, SingleActivity
+        (+Fragments), ViewPager2, Jetpack Navigation Component, Coroutines, Room database.</string>
+    <string name="about_this_app2">Attention:\n\nThis application is an educational creative project.
+        The application is published to demonstrate the capabilities of the stack, the developer, and
+        the Yandex Practice training course where it was made. The application is not a finished product
+        and is not subject to commercial use.</string>
+
+    <string name="playlist_empty_message">The playlist is empty</string>
 </resources>

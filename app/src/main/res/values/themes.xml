@@ -1,7 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorControlActivated">@color/yp_blue_and_yp_blue</item>
+        <item name="colorPrimary">@color/yp_white</item>
+        <item name="colorOnPrimary">@color/yp_black</item>
+        <item name="colorOnTertiary">@color/yp_light_gray</item>
+        <item name="materialAlertDialogTheme">@style/MaterialAlertDialog</item>
     </style>
 
+    <style name="MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="materialAlertDialogTitleTextStyle">@style/PLMaterialAlertDialog.App.Title.Text</item>
+        <item name="buttonBarNegativeButtonStyle">@style/PLWidget.App.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/PLWidget.App.Button</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PLWidget.App.Button</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

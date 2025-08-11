@@ -1,15 +1,13 @@
-package com.example.playlistmaker.medialibrary.ui.favorites
+package com.example.playlistmaker.medialibrary.ui.openplaylist
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-
-import com.example.playlistmaker.search.ui.TrackViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.UtilItemTrackBinding
 import com.example.playlistmaker.search.domain.models.Track
-import com.example.playlistmaker.utils.setDebouncedClickListener
+import com.example.playlistmaker.search.ui.TrackViewHolder
 
-class TrackAdapter(private val clickListener: TrackClickListener) :
+class OpenPlaylistTrackAdapter(private val clickListener: TrackClickListener) :
     RecyclerView.Adapter<TrackViewHolder>() {
 
     var tracks = ArrayList<Track>()
@@ -25,8 +23,12 @@ class TrackAdapter(private val clickListener: TrackClickListener) :
         val track: Track = tracks[position]
         holder.bind(track)
 
-        holder.itemView.setDebouncedClickListener() {
+        holder.itemView.setOnClickListener {
             clickListener.onTrackClick(track)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            clickListener.onTrackLongClick(track)
         }
     }
 
@@ -36,5 +38,7 @@ class TrackAdapter(private val clickListener: TrackClickListener) :
 
     interface TrackClickListener {
         fun onTrackClick(track: Track)
+
+        fun onTrackLongClick(track: Track): Boolean
     }
 }

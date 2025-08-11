@@ -18,25 +18,22 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayBinding
 import com.example.playlistmaker.search.domain.models.Track
-import com.example.playlistmaker.utils.ArtworkUrlLoader
+import com.example.playlistmaker.utils.GlideUrlLoader
 import com.example.playlistmaker.player.domain.PlayerState
-import com.example.playlistmaker.utils.AppPreferencesKeys
 import com.example.playlistmaker.utils.AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS
 import com.example.playlistmaker.utils.DebounceExtension
 import com.example.playlistmaker.utils.setDebouncedClickListener
 import com.example.playlistmaker.utils.stopLoadingIndicator
 import com.example.playlistmaker.medialibrary.domain.model.Playlist
-import com.example.playlistmaker.medialibrary.ui.playlist.PlaylistState
+import com.example.playlistmaker.medialibrary.ui.allplaylists.AllPlaylistsState
+import com.example.playlistmaker.utils.AppPreferencesKeys.ONE_SECOND
 import com.example.playlistmaker.utils.showSnackbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class PlayerFragment : Fragment() {
 
     private var _binding: FragmentPlayBinding? = null
     private val binding get() = _binding!!
     private lateinit var track: Track
-
-
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var adapter: PlayerPlaylistAdapter
@@ -45,18 +42,16 @@ class PlayerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
         _binding = FragmentPlayBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val trackFromArguments = arguments?.getSerializable(AppPreferencesKeys.AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track
+        val trackFromArguments = arguments?.getSerializable(AN_INSTANCE_OF_THE_TRACK_CLASS) as? Track
 
         if (trackFromArguments != null) {
             track = trackFromArguments
-
             track.previewUrl?.let { viewModel.setDataURL(track) }
             viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
                 setupScreenState(screenState)
@@ -81,7 +76,7 @@ class PlayerFragment : Fragment() {
             contentCountry.text = track.country
         }
         binding.trackTime.text = getString(R.string.zero_time)
-        ArtworkUrlLoader().loadImage(
+        GlideUrlLoader(R.drawable.ic_placeholder).loadImage(
             track.artworkUrl100?.replace("100x100bb.jpg", "512x512bb.jpg"),
             binding.trackCover
         )
@@ -95,13 +90,13 @@ class PlayerFragment : Fragment() {
         setupLikeButton()
         setupAddToPlaylistButton()
         if (isAdded) {
-            val indicatorDelay = DebounceExtension(AppPreferencesKeys.ONE_SECOND) {
+            val indicatorDelay = DebounceExtension(ONE_SECOND) {
                 stopLoadingIndicator()
             }
             indicatorDelay.debounce()
         }
 
-
+        // плейлистовое:
         val playlistClickListener = object : PlayerPlaylistAdapter.PlaylistClickListener {
             override fun onPlaylistClick(playlist: Playlist) {
                 viewModel.addTrackToPlaylist(track, playlist)
@@ -130,11 +125,6 @@ class PlayerFragment : Fragment() {
 
             is PlayerScreenState.Content -> {
                 setupPlayerState(screenState.playerState, screenState.playbackPosition)
-
-                binding.btnLike.setImageResource(
-                    if (screenState.isFavorite) R.drawable.ic_btn_like_done
-                    else R.drawable.ic_btn_dont_like
-                )
             }
         }
     }
@@ -187,6 +177,10 @@ class PlayerFragment : Fragment() {
     }
 
     private fun setupLikeButton() {
+        viewModel.isFavoriteTrack.observe(viewLifecycleOwner) { isFavoriteTrack ->
+            if (isFavoriteTrack) binding.btnLike.setImageResource(R.drawable.ic_btn_like_done)
+            else binding.btnLike.setImageResource(R.drawable.ic_btn_dont_like)
+        }
         binding.btnLike.setDebouncedClickListener {
             viewModel.upsertFavoriteTrack(track)
             Log.d("=== LOG ===", "=== PlayFragment > setupLikeButton()")
@@ -217,12 +211,12 @@ class PlayerFragment : Fragment() {
 
         binding.PlaylistsRecycler.adapter = adapter
         binding.buttonNewPlayList.setDebouncedClickListener {
-            findNavController().navigate(R.id.action_trackFragment_to_newPlaylistFragment)
+            findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment)
         }
 
         viewModel.statePlaylist.observe(viewLifecycleOwner) {
             when (it) {
-                is PlaylistState.Content -> {
+                is AllPlaylistsState.Content -> {
                     showContent(it.playList)
                 }
                 else -> {}
@@ -255,18 +249,10 @@ class PlayerFragment : Fragment() {
         viewModel.deleteValueStateAddTrack()
     }
 
-    override fun onResume() {
-        super.onResume()
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
-    override fun onPause() {
-        super.onPause()
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
-    }
-
-
-
 
     companion object {
         fun createArgs(track: Track): Bundle =

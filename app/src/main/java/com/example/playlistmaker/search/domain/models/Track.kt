@@ -1,6 +1,6 @@
 package com.example.playlistmaker.search.domain.models
 
-import com.example.playlistmaker.utils.mmss
+import com.example.playlistmaker.utils.msToSs
 import kotlinx.serialization.SerialName
 import java.io.Serializable
 
@@ -20,6 +20,5 @@ data class Track(
     val releaseYear: String?
         get() = releaseDate?.substringBefore('-')
     val trackTime: String
-        get() = mmss(trackTimeMillis)
+        get() = msToSs(trackTimeMillis)
 }
-
