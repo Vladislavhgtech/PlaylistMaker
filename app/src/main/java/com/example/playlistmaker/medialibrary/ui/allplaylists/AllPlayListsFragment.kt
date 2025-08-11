@@ -24,7 +24,7 @@ class AllPlayListsFragment : Fragment() {
     private val playlistClickListener = object : AllPlaylistsAdapter.PlaylistClickListener {
         override fun onPlaylistClick(playlistId: Int) {
             findNavController().navigate(
-                R.id.action_libraryFragment_to_openPlaylistFragment,
+                R.id.action_global_openPlaylistFragment,
                 OpenPlaylistFragment.createArgs(playlistId)
             )
         }

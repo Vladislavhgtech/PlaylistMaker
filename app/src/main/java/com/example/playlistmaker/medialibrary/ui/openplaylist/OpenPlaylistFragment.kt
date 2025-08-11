@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -140,23 +141,17 @@ class OpenPlaylistFragment : Fragment() {
         }
 
         binding.menu.setOnClickListener {
+            binding.overlay.visibility = View.VISIBLE
+            binding.overlay.setBackgroundColor("#00000000".toColorInt())
+            Glide.with(binding.root.context)
+                .load(currentPlaylistImageUrl)
+                .placeholder(R.drawable.ic_playlist_placeholder)
+                .error(R.drawable.ic_playlist_placeholder)
+                .into(binding.playlistCover)
+
             bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_COLLAPSED
-
-            currentPlaylistImageUrl?.let { imageUrl ->
-                Glide.with(this)
-                    .load(imageUrl)
-                    .placeholder(R.drawable.ic_playlist_placeholder)
-                    .into(object : CustomTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            binding.root.background = resource
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            binding.root.background = placeholder
-                        }
-                    })
-            }
         }
+
 
         binding.deletePlaylist.setOnClickListener {
             val playlistName = binding.playlistName.text.toString()
